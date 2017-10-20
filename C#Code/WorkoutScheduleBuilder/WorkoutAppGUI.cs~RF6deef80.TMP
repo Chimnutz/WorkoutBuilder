@@ -1,0 +1,305 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WindowsFormsApplication1
+{
+    public partial class WorkoutAppGUI : Form
+    {
+        public WorkoutAppGUI()
+        {
+            InitializeComponent();
+
+            numDaysNumInput.Value = 9;
+            numWeeksNumInput.Value = 16;
+            numCyclesNumInput.Value = numWeeksNumInput.Value * 7  / numDaysNumInput.Value;
+
+        }
+
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+
+
+        private void numDays_ValueChanged(object sender, EventArgs e)
+        {
+
+            workoutBuilderTable.Controls.Clear();
+            workoutBuilderTable.AutoSize = true;
+            workoutBuilderTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            workoutBuilderTable.ColumnCount = 3;
+            workoutBuilderTable.RowCount = (int)numDaysNumInput.Value + 1;
+
+            for (int ii = 0; ii < (int)numDaysNumInput.Value + 1; ii++)
+            {
+
+                //Next, add a row.  Only do this when once, when creating the first column
+                if (ii == 0)
+                {
+                    workoutBuilderTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                    workoutBuilderTable.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                    workoutBuilderTable.Controls.Add(new Label() { Text = "Day", Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 0, 0);
+                    workoutBuilderTable.Controls.Add(new Label() { Text = "Run", Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 1, 0);
+                    workoutBuilderTable.Controls.Add(new Label() { Text = "Gym Workout", Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 2, 0);
+
+                }
+                else
+                {
+                    ComboBox runCmbBox = new ComboBox();
+                    runCmbBox.Items.Add("Easy Run");
+                    runCmbBox.Items.Add("Long Run");
+                    runCmbBox.Items.Add("Speed Workout");
+                    runCmbBox.Items.Add("Tempo");
+                    runCmbBox.Items.Add("Rest");
+                    runCmbBox.Anchor = AnchorStyles.None;
+                    runCmbBox.Dock = DockStyle.Fill;
+                    runCmbBox.SelectedValueChanged += new EventHandler(runComboBox_ValueChanged);
+
+
+
+                    ComboBox gymCmbBox = new ComboBox();
+                    gymCmbBox.Items.Add("Legs");
+                    gymCmbBox.Items.Add("Chest");
+                    gymCmbBox.Items.Add("Shoulders");
+                    gymCmbBox.Items.Add("Back");
+                    gymCmbBox.Items.Add("Abs");
+                    gymCmbBox.Items.Add("Rest");
+                    gymCmbBox.Anchor = AnchorStyles.None;
+                    gymCmbBox.Dock = DockStyle.Fill;
+                    gymCmbBox.SelectedValueChanged += new EventHandler(gymComboBox_ValueChanged);
+
+
+                    workoutBuilderTable.Controls.Add(new Label() { Text = ii.ToString(), Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 0, ii);
+                    workoutBuilderTable.Controls.Add(runCmbBox, 1, ii);
+                    workoutBuilderTable.Controls.Add(gymCmbBox, 2, ii);
+                    gymCmbBox.Text = "Rest";
+                    runCmbBox.SelectedIndex = runCmbBox.FindStringExact("Rest");
+
+
+
+                }
+            }
+            initTableSelection((int)numDaysNumInput.Value);
+            numWeeksNumInput.Value = 16;
+            numCyclesNumInput.Value = numWeeksNumInput.Value * 7 / numDaysNumInput.Value;
+        }
+
+        private void initTableSelection(int numRows)
+        {
+            switch (numRows)
+            {
+
+                case 7:
+
+                    workoutBuilderTable.GetControlFromPosition(1, 1).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 2).Text = "Speed Workout";
+                    workoutBuilderTable.GetControlFromPosition(1, 3).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(1, 4).Text = "Tempo";
+                    workoutBuilderTable.GetControlFromPosition(1, 5).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 6).Text = "Long Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 7).Text = "Easy Run";
+
+                    workoutBuilderTable.GetControlFromPosition(2, 1).Text = "Chest";
+                    workoutBuilderTable.GetControlFromPosition(2, 2).Text = "Back";
+                    workoutBuilderTable.GetControlFromPosition(2, 3).Text = "Legs";
+                    workoutBuilderTable.GetControlFromPosition(2, 4).Text = "Abs";
+                    workoutBuilderTable.GetControlFromPosition(2, 5).Text = "Shoulders";
+                    workoutBuilderTable.GetControlFromPosition(2, 6).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 7).Text = "Rest";
+
+                    break;
+
+                case 8:
+
+                    workoutBuilderTable.GetControlFromPosition(1, 1).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 2).Text = "Speed Workout";
+                    workoutBuilderTable.GetControlFromPosition(1, 3).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(1, 4).Text = "Tempo";
+                    workoutBuilderTable.GetControlFromPosition(1, 5).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(1, 6).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 7).Text = "Long Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 8).Text = "Easy Run";
+
+                    workoutBuilderTable.GetControlFromPosition(2, 1).Text = "Chest";
+                    workoutBuilderTable.GetControlFromPosition(2, 2).Text = "Back";
+                    workoutBuilderTable.GetControlFromPosition(2, 3).Text = "Legs";
+                    workoutBuilderTable.GetControlFromPosition(2, 4).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 5).Text = "Abs";
+                    workoutBuilderTable.GetControlFromPosition(2, 6).Text = "Shoulders";
+                    workoutBuilderTable.GetControlFromPosition(2, 7).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 8).Text = "Rest";
+
+                    break;
+
+                case 9:
+
+                    workoutBuilderTable.GetControlFromPosition(1, 1).Text = "Long Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 2).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 3).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(1, 4).Text = "Tempo";
+                    workoutBuilderTable.GetControlFromPosition(1, 5).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 6).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(1, 7).Text = "Easy Run";
+                    workoutBuilderTable.GetControlFromPosition(1, 8).Text = "Speed Workout";
+                    workoutBuilderTable.GetControlFromPosition(1, 9).Text = "Rest";
+
+                    workoutBuilderTable.GetControlFromPosition(2, 1).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 2).Text = "Abs";
+                    workoutBuilderTable.GetControlFromPosition(2, 3).Text = "Chest";
+                    workoutBuilderTable.GetControlFromPosition(2, 4).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 5).Text = "Back";
+                    workoutBuilderTable.GetControlFromPosition(2, 6).Text = "Legs";
+                    workoutBuilderTable.GetControlFromPosition(2, 7).Text = "Shoulders";
+                    workoutBuilderTable.GetControlFromPosition(2, 8).Text = "Rest";
+                    workoutBuilderTable.GetControlFromPosition(2, 9).Text = "Rest";
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void gymComboBox_ValueChanged(object sender, EventArgs e)
+        {
+            ComboBox gymCmbBox = (ComboBox)sender;
+            string selectedString = (string)gymCmbBox.SelectedItem;
+
+            switch (selectedString)
+            {
+                case "Rest":
+                    gymCmbBox.BackColor = Color.LightBlue;
+                    break;
+                case "Shoulders":
+                    gymCmbBox.BackColor = Color.Yellow;
+                    break;
+                case "Abs":
+                    gymCmbBox.BackColor = Color.Yellow;
+                    break;
+                case "Chest":
+                    gymCmbBox.BackColor = Color.Yellow;
+                    break;
+                case "Back":
+                    gymCmbBox.BackColor = Color.Yellow;
+                    break;
+                case "Legs":
+                    gymCmbBox.BackColor = Color.Yellow;
+                    break;
+                default:
+                    break;
+
+
+            }
+        }
+
+        private void runComboBox_ValueChanged(object sender, EventArgs e)
+        {
+            ComboBox runCmbBox = (ComboBox)sender;
+            string selectedString = (string)runCmbBox.SelectedItem;
+
+            switch (selectedString)
+            {
+                case "Rest":
+                    runCmbBox.BackColor = Color.LightBlue;
+                    break;
+                case "Easy Run":
+                    runCmbBox.BackColor = Color.LightGreen;
+                    break;
+                case "Long Run":
+                    runCmbBox.BackColor = Color.Green;
+                    break;
+                case "Tempo":
+                    runCmbBox.BackColor = Color.Orange;
+                    break;
+                case "Speed Workout":
+                    runCmbBox.BackColor = Color.Orange;
+                    break;
+                default:
+                    break;
+
+
+            }
+        }
+
+        private void numCycles_ValueChanged(object sender, EventArgs e)
+        {
+            numWeeksNumInput.Value = numCyclesNumInput.Value * numDaysNumInput.Value / 7;
+
+        }
+
+        private void numWeeks_ValueChanged(object sender, EventArgs e)
+        {
+            numCyclesNumInput.Value = numWeeksNumInput.Value * 7 / numDaysNumInput.Value;
+        }
+
+        private void cycleMileageStartNumInput_ValueChanged(object sender, EventArgs e)
+        {
+            updateCycleMileageTable();
+        }
+
+        private void updateCycleMileageTable()
+        {
+            double mileageDelta = ((double)cycleMileageEndNumInput.Value - (double)cycleMileageStartNumInput.Value) / ((double)numCyclesNumInput.Value-1.0);
+            cycleMileageWeeklyNumInput.Value = (decimal)mileageDelta;
+
+
+            mileageTablePanel.Controls.Clear();
+            mileageTablePanel.AutoSize = true;
+            mileageTablePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            mileageTablePanel.ColumnCount = 2;
+            mileageTablePanel.RowCount = (int)numCyclesNumInput.Value + 1;
+
+            for (int ii = 0; ii < numCyclesNumInput.Value; ii++)
+            {
+
+                //Next, add a row.  Only do this when once, when creating the first column
+                if (ii == 0)
+                {
+                    mileageTablePanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                    mileageTablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                    mileageTablePanel.Controls.Add(new Label() { Text = "Cycle", Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 0, 0);
+                    mileageTablePanel.Controls.Add(new Label() { Text = "Milage", Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 1, 0);
+                }
+
+                else
+                {
+                    double doubleCycleMileage = (double)cycleMileageStartNumInput.Value + mileageDelta * (ii - 1);
+                    double maxMileage = (double)cycleMileageEndNumInput.Value;
+                    if (doubleCycleMileage > maxMileage)
+                    {
+                        doubleCycleMileage = maxMileage;
+                    }
+
+                    mileageTablePanel.Controls.Add(new Label() { Text = ii.ToString(), Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 0, ii);
+                    mileageTablePanel.Controls.Add(new Label() { Text = Math.Ceiling(doubleCycleMileage).ToString(), Anchor = AnchorStyles.None, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill }, 1, ii);
+                }
+            }
+        }
+
+        private void cycleMileageEndNumInput_ValueChanged(object sender, EventArgs e)
+        {
+            cycleMileageWeeklyNumInput.Value = (cycleMileageEndNumInput.Value - cycleMileageStartNumInput.Value)/numCyclesNumInput.Value;
+            updateCycleMileageTable();
+        }
+
+        private void cycleMileageRatioNumInput_ValueChanged(object sender, EventArgs e)
+        {
+            //cycleMileageEndNumInput.Value = cycleMileageStartNumInput.Value* cycleMileageWeeklyNumInput.Value* numCyclesNumInput.Value;
+        }
+    }
+
+
+}
+
+
+
+

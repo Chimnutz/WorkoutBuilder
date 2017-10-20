@@ -1,0 +1,328 @@
+﻿namespace WindowsFormsApplication1
+{
+    partial class WorkoutAppGUI
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.speedWorkoutTab = new System.Windows.Forms.TabControl();
+            this.builderTab = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cycleMileageWeeklyNumInput = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cycleMileageEndNumInput = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cycleMileageStartNumInput = new System.Windows.Forms.NumericUpDown();
+            this.numCyclesNumInput = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.numWeeksNumInput = new System.Windows.Forms.NumericUpDown();
+            this.numDaysNumInput = new System.Windows.Forms.NumericUpDown();
+            this.workoutBuilderTable = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.speedWorkoutBuilder_tab = new System.Windows.Forms.TabPage();
+            this.longRunTab = new System.Windows.Forms.TabPage();
+            this.mileageTablePanel = new System.Windows.Forms.TableLayoutPanel();
+            this.speedWorkoutTab.SuspendLayout();
+            this.builderTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageWeeklyNumInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageEndNumInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageStartNumInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCyclesNumInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeeksNumInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDaysNumInput)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // speedWorkoutTab
+            // 
+            this.speedWorkoutTab.Controls.Add(this.builderTab);
+            this.speedWorkoutTab.Controls.Add(this.speedWorkoutBuilder_tab);
+            this.speedWorkoutTab.Controls.Add(this.longRunTab);
+            this.speedWorkoutTab.Location = new System.Drawing.Point(1, 2);
+            this.speedWorkoutTab.Name = "speedWorkoutTab";
+            this.speedWorkoutTab.SelectedIndex = 0;
+            this.speedWorkoutTab.Size = new System.Drawing.Size(1131, 649);
+            this.speedWorkoutTab.TabIndex = 0;
+            // 
+            // builderTab
+            // 
+            this.builderTab.BackColor = System.Drawing.Color.Gainsboro;
+            this.builderTab.Controls.Add(this.mileageTablePanel);
+            this.builderTab.Controls.Add(this.label7);
+            this.builderTab.Controls.Add(this.cycleMileageWeeklyNumInput);
+            this.builderTab.Controls.Add(this.label6);
+            this.builderTab.Controls.Add(this.label5);
+            this.builderTab.Controls.Add(this.cycleMileageEndNumInput);
+            this.builderTab.Controls.Add(this.label4);
+            this.builderTab.Controls.Add(this.cycleMileageStartNumInput);
+            this.builderTab.Controls.Add(this.numCyclesNumInput);
+            this.builderTab.Controls.Add(this.label3);
+            this.builderTab.Controls.Add(this.label2);
+            this.builderTab.Controls.Add(this.numWeeksNumInput);
+            this.builderTab.Controls.Add(this.numDaysNumInput);
+            this.builderTab.Controls.Add(this.workoutBuilderTable);
+            this.builderTab.Controls.Add(this.label1);
+            this.builderTab.Location = new System.Drawing.Point(4, 22);
+            this.builderTab.Name = "builderTab";
+            this.builderTab.Padding = new System.Windows.Forms.Padding(3);
+            this.builderTab.Size = new System.Drawing.Size(1123, 623);
+            this.builderTab.TabIndex = 0;
+            this.builderTab.Text = "Cycle Builder";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(863, 38);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(117, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Cycle Mileage Increase";
+            // 
+            // cycleMileageWeeklyNumInput
+            // 
+            this.cycleMileageWeeklyNumInput.DecimalPlaces = 4;
+            this.cycleMileageWeeklyNumInput.Location = new System.Drawing.Point(985, 36);
+            this.cycleMileageWeeklyNumInput.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.cycleMileageWeeklyNumInput.Minimum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            -2147483648});
+            this.cycleMileageWeeklyNumInput.Name = "cycleMileageWeeklyNumInput";
+            this.cycleMileageWeeklyNumInput.Size = new System.Drawing.Size(120, 20);
+            this.cycleMileageWeeklyNumInput.TabIndex = 14;
+            this.cycleMileageWeeklyNumInput.ValueChanged += new System.EventHandler(this.cycleMileageRatioNumInput_ValueChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(612, 66);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(95, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Cycle Mileage End";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(612, 62);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 13);
+            this.label5.TabIndex = 12;
+            // 
+            // cycleMileageEndNumInput
+            // 
+            this.cycleMileageEndNumInput.Location = new System.Drawing.Point(724, 64);
+            this.cycleMileageEndNumInput.Name = "cycleMileageEndNumInput";
+            this.cycleMileageEndNumInput.Size = new System.Drawing.Size(120, 20);
+            this.cycleMileageEndNumInput.TabIndex = 11;
+            this.cycleMileageEndNumInput.ValueChanged += new System.EventHandler(this.cycleMileageEndNumInput_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(612, 36);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Cycle Mileage Start";
+            // 
+            // cycleMileageStartNumInput
+            // 
+            this.cycleMileageStartNumInput.Location = new System.Drawing.Point(724, 34);
+            this.cycleMileageStartNumInput.Name = "cycleMileageStartNumInput";
+            this.cycleMileageStartNumInput.Size = new System.Drawing.Size(120, 20);
+            this.cycleMileageStartNumInput.TabIndex = 9;
+            this.cycleMileageStartNumInput.ValueChanged += new System.EventHandler(this.cycleMileageStartNumInput_ValueChanged);
+            // 
+            // numCyclesNumInput
+            // 
+            this.numCyclesNumInput.DecimalPlaces = 3;
+            this.numCyclesNumInput.Location = new System.Drawing.Point(149, 64);
+            this.numCyclesNumInput.Name = "numCyclesNumInput";
+            this.numCyclesNumInput.Size = new System.Drawing.Size(120, 20);
+            this.numCyclesNumInput.TabIndex = 8;
+            this.numCyclesNumInput.ValueChanged += new System.EventHandler(this.numCycles_ValueChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 66);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(92, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Number Of Cycles";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(298, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(95, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Number Of Weeks";
+            // 
+            // numWeeksNumInput
+            // 
+            this.numWeeksNumInput.DecimalPlaces = 3;
+            this.numWeeksNumInput.Location = new System.Drawing.Point(410, 64);
+            this.numWeeksNumInput.Name = "numWeeksNumInput";
+            this.numWeeksNumInput.Size = new System.Drawing.Size(120, 20);
+            this.numWeeksNumInput.TabIndex = 5;
+            this.numWeeksNumInput.ValueChanged += new System.EventHandler(this.numWeeks_ValueChanged);
+            // 
+            // numDaysNumInput
+            // 
+            this.numDaysNumInput.Location = new System.Drawing.Point(149, 32);
+            this.numDaysNumInput.Maximum = new decimal(new int[] {
+            14,
+            0,
+            0,
+            0});
+            this.numDaysNumInput.Minimum = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numDaysNumInput.Name = "numDaysNumInput";
+            this.numDaysNumInput.Size = new System.Drawing.Size(120, 20);
+            this.numDaysNumInput.TabIndex = 3;
+            this.numDaysNumInput.Value = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numDaysNumInput.ValueChanged += new System.EventHandler(this.numDays_ValueChanged);
+            // 
+            // workoutBuilderTable
+            // 
+            this.workoutBuilderTable.ColumnCount = 3;
+            this.workoutBuilderTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.18182F));
+            this.workoutBuilderTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.90909F));
+            this.workoutBuilderTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.90909F));
+            this.workoutBuilderTable.Location = new System.Drawing.Point(10, 98);
+            this.workoutBuilderTable.Name = "workoutBuilderTable";
+            this.workoutBuilderTable.RowCount = 2;
+            this.workoutBuilderTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.workoutBuilderTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.workoutBuilderTable.Size = new System.Drawing.Size(520, 326);
+            this.workoutBuilderTable.TabIndex = 2;
+            this.workoutBuilderTable.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(126, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Number Of Days In Cycle";
+            // 
+            // speedWorkoutBuilder_tab
+            // 
+            this.speedWorkoutBuilder_tab.BackColor = System.Drawing.Color.Gainsboro;
+            this.speedWorkoutBuilder_tab.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.speedWorkoutBuilder_tab.Location = new System.Drawing.Point(4, 22);
+            this.speedWorkoutBuilder_tab.Name = "speedWorkoutBuilder_tab";
+            this.speedWorkoutBuilder_tab.Padding = new System.Windows.Forms.Padding(3);
+            this.speedWorkoutBuilder_tab.Size = new System.Drawing.Size(1123, 623);
+            this.speedWorkoutBuilder_tab.TabIndex = 1;
+            this.speedWorkoutBuilder_tab.Text = "Speed Workout Builder";
+            // 
+            // longRunTab
+            // 
+            this.longRunTab.BackColor = System.Drawing.Color.Gainsboro;
+            this.longRunTab.Location = new System.Drawing.Point(4, 22);
+            this.longRunTab.Name = "longRunTab";
+            this.longRunTab.Padding = new System.Windows.Forms.Padding(3);
+            this.longRunTab.Size = new System.Drawing.Size(1123, 623);
+            this.longRunTab.TabIndex = 2;
+            this.longRunTab.Text = "Long Run Builder";
+            // 
+            // mileageTablePanel
+            // 
+            this.mileageTablePanel.ColumnCount = 2;
+            this.mileageTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.18182F));
+            this.mileageTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.90909F));
+            this.mileageTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.90909F));
+            this.mileageTablePanel.Location = new System.Drawing.Point(615, 98);
+            this.mileageTablePanel.Name = "mileageTablePanel";
+            this.mileageTablePanel.RowCount = 2;
+            this.mileageTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.mileageTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.mileageTablePanel.Size = new System.Drawing.Size(168, 489);
+            this.mileageTablePanel.TabIndex = 16;
+            // 
+            // WorkoutAppGUI
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1131, 651);
+            this.Controls.Add(this.speedWorkoutTab);
+            this.Name = "WorkoutAppGUI";
+            this.Text = "Workout Creator";
+            this.speedWorkoutTab.ResumeLayout(false);
+            this.builderTab.ResumeLayout(false);
+            this.builderTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageWeeklyNumInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageEndNumInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleMileageStartNumInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCyclesNumInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeeksNumInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDaysNumInput)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.TabControl speedWorkoutTab;
+        private System.Windows.Forms.TabPage builderTab;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage speedWorkoutBuilder_tab;
+        private System.Windows.Forms.TableLayoutPanel workoutBuilderTable;
+        private System.Windows.Forms.NumericUpDown numDaysNumInput;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown numWeeksNumInput;
+        private System.Windows.Forms.NumericUpDown numCyclesNumInput;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TabPage longRunTab;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown cycleMileageEndNumInput;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown cycleMileageStartNumInput;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown cycleMileageWeeklyNumInput;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TableLayoutPanel mileageTablePanel;
+    }
+}
+
