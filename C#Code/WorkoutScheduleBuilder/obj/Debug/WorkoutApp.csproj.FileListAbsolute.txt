@@ -19,3 +19,6 @@ C:\Misc\WorkoutSchedule\C#Code\WorkoutScheduleBuilder\obj\Debug\WorkoutApp.cspro
 C:\Misc\WorkoutSchedule\C#Code\WorkoutScheduleBuilder\obj\Debug\WindowsFormsApplication1.WorkoutAppGUI.resources
 C:\Misc\WorkoutSchedule\C#Code\WorkoutScheduleBuilder\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
 C:\Misc\WorkoutSchedule\C#Code\WorkoutScheduleBuilder\obj\Debug\WorkoutApp.csproj.GenerateResource.Cache
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutScheduleBuilder\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutScheduleBuilder\obj\Debug\WindowsFormsApplication1.exe
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutScheduleBuilder\obj\Debug\WindowsFormsApplication1.pdb
