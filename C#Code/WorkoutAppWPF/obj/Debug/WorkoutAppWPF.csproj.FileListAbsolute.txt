@@ -1,0 +1,14 @@
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\WorkoutAppWPF.exe.config
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\WorkoutAppWPF.exe
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\WorkoutAppWPF.pdb
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.csprojResolveAssemblyReference.cache
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\MainWindow.g.cs
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\App.g.cs
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF_MarkupCompile.cache
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF_MarkupCompile.lref
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\MainWindow.baml
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.g.resources
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.Properties.Resources.resources
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.csproj.GenerateResource.Cache
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.exe
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.pdb
