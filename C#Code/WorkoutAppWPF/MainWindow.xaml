@@ -26,31 +26,75 @@
                 </MenuItem>
             </Menu>
 
-         <!--Statistics Panel-->
-        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-            <Expander ExpandDirection="Right" IsExpanded="True">
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content = "Total Mileage"></Label>
-                        <Label Content= "Show The Data"></Label>
-                    </StackPanel>
-                </ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            </Expander>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        </StackPanel>
+                <!--Statistics Panel-->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Expander ExpandDirection="Right" IsExpanded="True">
+
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content = "Total Mileage"></Label>
+                                <Label Content= "Show The Data"></Label>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Expander>
+                </StackPanel>
+
+                <!--First Grid Splitter-->
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+                <!--Data Panel-->
+                <StackPanel  Grid.Column="2" Orientation="Horizontal">
+                    <Label Content = "Put the Table Here"></Label>
+                    <Label Content= "Show The Data"></Label>
+                </StackPanel>
+
+                <!--First Grid Splitter-->
+                <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
+
+                <StackPanel  Grid.Column="4" Orientation="Horizontal">
+                    <Label Content = "Put the run def here"></Label>
+                    <Label Content= "Show The Data"></Label>
+                </StackPanel>
+            </Grid>
+
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+            
+            <Grid Grid.Row="2">
+                <StackPanel  Grid.Column="4" Orientation="Horizontal">
+                    <Label Content = "Put the chart here"></Label>
+
+                </StackPanel>
+            </Grid>
+
+
+        </Grid>
+            
+        
+
+
+        
 
 
 
 
-        <!--Data Panel-->
-        <Border Background="Gray">
-            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                <Label Content = "Put the Table Here"></Label>
-                <Label Content= "Show The Data"></Label>
-            </StackPanel>
-        </Border>
+        
 
 
     </DockPanel>
