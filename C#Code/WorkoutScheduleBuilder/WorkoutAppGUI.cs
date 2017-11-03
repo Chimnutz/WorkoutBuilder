@@ -8,8 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-
-
+using WorkoutApp.ActivityTypes;
 
 namespace WindowsFormsApplication1
 {
@@ -870,7 +869,6 @@ namespace WindowsFormsApplication1
 
         }
         #endregion
-
         #region Tempo Table
         private void createTempoWorkoutTable()
         {
@@ -1061,7 +1059,6 @@ namespace WindowsFormsApplication1
         }
 
         #endregion
-
         #region Easy Table
         private void createEasyRunTable()
         {
@@ -1183,6 +1180,12 @@ namespace WindowsFormsApplication1
                         easyCount++; //increment the number of easy days
                         easyIndex.Add(columnCount+2); //add the index of the easy day
                         previousMileage.Add(lastDistance); //store the mileage of the day before teh easy day
+
+                        //TODO ok we need to connect this up correctly
+                        Run thisEasyRun = new Run();
+                        //thisEasyRun.mileage = 0;
+                        //thisEasyRun.pace = "Easy";
+
                         break;
                     case "Long Run":
                         dailyControl.Text = "Long Run";
@@ -1319,8 +1322,6 @@ namespace WindowsFormsApplication1
 
         }
         #endregion
-
-
         #region Change Listeners
 
         private void numDays_ValueChanged(object sender, EventArgs e)
@@ -2047,8 +2048,6 @@ namespace WindowsFormsApplication1
 
 
         #endregion
-
-
     }
 }
 

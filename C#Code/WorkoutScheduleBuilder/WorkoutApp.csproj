@@ -49,6 +49,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivityTypes\Run.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="WorkoutAppGUI.cs">
       <SubType>Form</SubType>
     </Compile>
