@@ -44,11 +44,77 @@
                 </Grid.ColumnDefinitions>
 
                 <!--Statistics Panel-->
-                <DockPanel Grid.Column="0">
+                <DockPanel Grid.Column="0" Margin="10 10 10 10">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Orientation="Vertical">
-                            <Label Content = "Number Of Cycles"></Label>
-                            <TextBox Name="NumberTextBox" PreviewTextInput="NumberValidationTextBox"/>
+                        <StackPanel Name = "mileageDefStackPanel" Orientation="Vertical">
+
+                            <!--Cycle Definition-->
+                            <Label Content = "Cycle Definition" Margin="0 0 0 0"></Label>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content = "Number Of Cycles" Margin="0 0 0 0"  Grid.Column="0"></Label>
+                                <Label Content = "Number Of Weeks" Margin="0 0 0 0"  Grid.Column="1"></Label>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Name="numCyclesInput" PreviewTextInput="NumberValidationTextBox" TextChanged="numCycles_Changed" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0"  Grid.Column="0"/>
+                                <TextBox Name="numWeeksInput" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" IsEnabled="False"  Grid.Column="1"/>
+                            </Grid>
+                            
+                            <Label Content = "Number Of Days In Cycle" Margin="0 0 0 0"></Label>
+                            <TextBox Name="numDaysInput" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+
+                            <!--Mileage Definition-->
+                            <Label Content = "Mileage Definition" Margin="0 20 0 0"></Label>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content = "Starting Mileage" Margin="0 0 0 0" Grid.Column="0"></Label>
+                                <Label Content = "Ending Mileage" Margin="0 0 0 0" Grid.Column="1"></Label>
+                            </Grid>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Name="minMileageInput" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"/>
+                                <TextBox Name="maxMileageInput" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="1"/>
+                            </Grid>
+
+                            <Label Content = "Cycle Increase" Margin="0 0 0 0" Grid.Column="0"></Label>
+                            <TextBox Name="cycleMileageIncrease" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content = "Cycle Delta" Margin="0 0 0 0" Grid.Column="0"></Label>
+                                <Label Content = "Num Cycles Reset" Margin="0 0 0 0" Grid.Column="1"></Label>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Name="cycleMileageDeltaInput" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"/>
+                                <TextBox Name="numCyclesReset" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="1"/>
+                            </Grid>
+
+                            <Button Name="recalcMileageTarget" Click="recalcMileage_click" Content="Reset Mileage Targets" Margin="5,10,5,5" Width="238" HorizontalAlignment="Left"></Button>
+
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>
@@ -57,10 +123,18 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
                 <!--Data Panel-->
-                <StackPanel  Grid.Column="2" Orientation="Horizontal">
-                    <Label Content = "Put the Table Here"></Label>
-                    <Label Content= "Show The Data"></Label>
-                </StackPanel>
+
+                <DockPanel Grid.Column="2" Margin="10 10 10 10">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
+
+                            <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="5,10,5,5" Width="238" HorizontalAlignment="Left"></Button>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+
+
 
                 <!--First Grid Splitter-->
                 <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
