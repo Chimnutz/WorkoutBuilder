@@ -61,6 +61,13 @@ namespace WorkoutAppWPF
 
         }
 
+        private void recalcRunTable_click(object sender, EventArgs e)
+        {
+            mileageDefStackPanel.Children.Remove(mileageGrid);
+            createMileageTable((int)double.Parse(numCyclesInput.Text));
+
+        }
+
         private void numCycles_Changed(object sender, EventArgs e)
         {
             if (numCyclesInput.Text != "")

@@ -124,14 +124,38 @@
 
                 <!--Data Panel-->
 
-                <DockPanel Grid.Column="2" Margin="10 10 10 10">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
+                <DockPanel Grid.Column="2" Margin="0 0 0 0">
 
-                            <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="5,10,5,5" Width="238" HorizontalAlignment="Left"></Button>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="8*"/>
+                        </Grid.RowDefinitions>
 
-                        </StackPanel>
-                    </ScrollViewer>
+                        <DockPanel Grid.Row = "0">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                                <StackPanel Name = "WorkoutDefStackPanel" Orientation="Vertical">
+
+                                   <Label Content="workouts defined here"></Label>
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+
+
+                        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+
+                        <DockPanel Grid.Row = "2">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
+
+                                    <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="5,10,5,5" Width="238" HorizontalAlignment="Left"></Button>
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Grid>
                 </DockPanel>
 
 
