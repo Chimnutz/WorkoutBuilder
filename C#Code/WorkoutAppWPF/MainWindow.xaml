@@ -7,8 +7,9 @@
         mc:Ignorable="d"
         Title="Trainging Plan Builder" Height="900" Width="1500">
 
-        
-        <DockPanel>
+
+
+    <DockPanel>
         <!--Menu-->
         <Menu DockPanel.Dock="Top" >
             <MenuItem Header="_File">
@@ -126,18 +127,21 @@
 
                 <DockPanel Grid.Column="2" Margin="0 0 0 0">
 
+                    <!--Panel to select run type-->
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="5"/>
-                            <RowDefinition Height="8*"/>
+                            <RowDefinition Height="5*"/>
                         </Grid.RowDefinitions>
 
                         <DockPanel Grid.Row = "0">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Name = "WorkoutDefStackPanel" Orientation="Vertical">
-
-                                   <Label Content="workouts defined here"></Label>
+                                    <Grid Name="dayNumerGrid"></Grid>
+                                    <Grid Name="crossTrainGrid"></Grid>
+                                    <Grid Name="runTypeGrid"></Grid>
+                                    <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="0,5,0,0" Width="238" HorizontalAlignment="Left"></Button>
 
                                 </StackPanel>
                             </ScrollViewer>
@@ -150,7 +154,6 @@
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
 
-                                    <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="5,10,5,5" Width="238" HorizontalAlignment="Left"></Button>
 
                                 </StackPanel>
                             </ScrollViewer>

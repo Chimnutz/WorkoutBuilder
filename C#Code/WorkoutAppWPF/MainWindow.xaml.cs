@@ -23,6 +23,8 @@ namespace WorkoutAppWPF
     {
         Grid mileageGrid;
         List<TextBox> mileageList;
+        List<ComboBox> crossTrainInputList;
+        List<ComboBox> runInputList;
 
         public MainWindowApp()
         {
@@ -31,6 +33,7 @@ namespace WorkoutAppWPF
             setDefaults();
 
             createMileageTable((int)double.Parse(numCyclesInput.Text));
+            createRunTypeSelectorTable();
 
             TextBox thisTextBox = mileageList[0];
 
@@ -43,7 +46,7 @@ namespace WorkoutAppWPF
 
             numCyclesInput.Text = 16.ToString();
             numDaysInput.Text = 9.ToString();
-            numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text)/7*10)/10).ToString();
+            numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) / 7 * 10) / 10).ToString();
             minMileageInput.Text = 10.ToString();
             maxMileageInput.Text = 40.ToString();
             cycleMileageIncrease.Text = 4.ToString();
@@ -77,7 +80,7 @@ namespace WorkoutAppWPF
                     numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) / 7 * 10) / 10).ToString();
                 }
             }
-            
+
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -109,7 +112,7 @@ namespace WorkoutAppWPF
             int numberOfCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
 
             // Create Rows
-            for (int ii = 0; ii < numberOfCycles+1; ii++)
+            for (int ii = 0; ii < numberOfCycles + 1; ii++)
             {
                 RowDefinition gridRow = new RowDefinition();
                 mileageGrid.RowDefinitions.Add(gridRow);
@@ -167,13 +170,13 @@ namespace WorkoutAppWPF
                     else
                     {
                         periodCnt++;
-                        if(periodCnt> numCyclesRest)
+                        if (periodCnt > numCyclesRest)
                         {
                             doubleCycleMileage = doubleCycleMileage - double.Parse(cycleMileageDeltaInput.Text);
                             periodCnt = 1;
-                        }else
+                        } else
                         {
-                            doubleCycleMileage = lastMileageTgt + double.Parse(cycleMileageDeltaInput.Text)/ (numCyclesRest-1);
+                            doubleCycleMileage = lastMileageTgt + double.Parse(cycleMileageDeltaInput.Text) / (numCyclesRest - 1);
                             if (doubleCycleMileage >= maxMileage)
                             {
                                 doubleCycleMileage = maxMileage;
@@ -189,9 +192,9 @@ namespace WorkoutAppWPF
 
                 //Create the controls
                 Label cycleText = new Label();
-                cycleText.Content = (ii+1).ToString();
+                cycleText.Content = (ii + 1).ToString();
                 cycleText.Margin = new Thickness(5, 0, 0, 0);
-                Grid.SetRow(cycleText, ii+1);
+                Grid.SetRow(cycleText, ii + 1);
                 Grid.SetColumn(cycleText, 0);
                 mileageGrid.Children.Add(cycleText);
 
@@ -200,7 +203,7 @@ namespace WorkoutAppWPF
                 mileageList.Add(mileageText);
                 mileageText.Text = (doubleCycleMileage).ToString();
                 mileageText.Margin = new Thickness(5, 0, 0, 0);
-                Grid.SetRow(mileageText, ii+1);
+                Grid.SetRow(mileageText, ii + 1);
                 Grid.SetColumn(mileageText, 1);
                 mileageGrid.Children.Add(mileageText);
             }
@@ -209,7 +212,216 @@ namespace WorkoutAppWPF
             mileageDefStackPanel.Children.Add(mileageGrid);
 
         }
+   
+
+        private void createRunTypeSelectorTable()
+        {
+            int numDaysInCycle = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+            crossTrainInputList = new List<ComboBox>();
+            runInputList = new List<ComboBox>();
+
+            for (int ii = 0; ii < numDaysInCycle; ii++)
+            {
+                // Create Columns
+                ColumnDefinition gridCol1 = new ColumnDefinition();
+                gridCol1.Width = new GridLength(1, GridUnitType.Star);
+
+                ColumnDefinition gridCol2 = new ColumnDefinition();
+                gridCol2.Width = new GridLength(1, GridUnitType.Star);
+
+                ColumnDefinition gridCol3 = new ColumnDefinition();
+                gridCol3.Width = new GridLength(1, GridUnitType.Star);
+
+                dayNumerGrid.ColumnDefinitions.Add(gridCol1);
+                runTypeGrid.ColumnDefinitions.Add(gridCol2);
+                crossTrainGrid.ColumnDefinitions.Add(gridCol3);
+
+                //Add Day Number Text
+                Label dayNumberText = new Label();
+                dayNumberText.Content = "Day " + (ii + 1).ToString();
+                dayNumberText.HorizontalAlignment = HorizontalAlignment.Center;
+                Grid.SetRow(dayNumberText, 0);
+                Grid.SetColumn(dayNumberText, ii);
+                dayNumerGrid.Children.Add(dayNumberText);
+
+                //Add Cross Train Inputs
+                ComboBox crossTrainInput = new ComboBox();
+                crossTrainInput.Items.Add("Swim");
+                crossTrainInput.Items.Add("Bike");
+                crossTrainInput.Items.Add("Abs");
+                crossTrainInput.Items.Add("W - Legs");
+                crossTrainInput.Items.Add("W - Chest");
+                crossTrainInput.Items.Add("W - Shoulders");
+                crossTrainInput.Items.Add("W - Back");
+                crossTrainInput.Items.Add("Rest");
+                crossTrainInput.SelectionChanged += crossTrainCmbBox_ValueChanged;
+                crossTrainInput.SelectedItem = "Rest";
+                Grid.SetRow(crossTrainInput, 0);
+                Grid.SetColumn(crossTrainInput, ii);
+                crossTrainGrid.Children.Add(crossTrainInput);
+                crossTrainInputList.Add(crossTrainInput);
+
+                //Add Run Train Inputs
+                ComboBox runInput = new ComboBox();
+                runInput.Items.Add("Rest");
+                runInput.Items.Add("Easy");
+                runInput.Items.Add("Long");
+                runInput.Items.Add("Tempo");
+                runInput.Items.Add("Interval");
+                runInput.SelectionChanged += runComboBox_ValueChanged;
+                runInput.SelectedItem = "Rest";
+                Grid.SetRow(runInput, 0);
+                Grid.SetColumn(runInput, ii);
+                runTypeGrid.Children.Add(runInput);
+                runInputList.Add(runInput);
+
+            }
+
+            setInputSelection(numDaysInCycle);
+        }
+
+        private void CrossTrainInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void setInputSelection(int numRows)
+        {
+            switch (numRows)
+            {
+
+                case 7:
+
+                    runInputList[0].SelectedItem = "Easy";
+                    runInputList[1].SelectedItem = "Interval";
+                    runInputList[2].SelectedItem = "Rest";
+                    runInputList[3].SelectedItem = "Tempo";
+                    runInputList[4].SelectedItem = "Easy";
+                    runInputList[5].SelectedItem = "Long";
+                    runInputList[6].SelectedItem = "Easy";
+
+                    crossTrainInputList[0].SelectedItem = "W - Chest";
+                    crossTrainInputList[1].SelectedItem = "W - Back";
+                    crossTrainInputList[2].SelectedItem = "W - Legs";
+                    crossTrainInputList[3].SelectedItem = "Abs";
+                    crossTrainInputList[4].SelectedItem = "W - Shoulders";
+                    crossTrainInputList[5].SelectedItem = "Rest";
+                    crossTrainInputList[6].SelectedItem = "Rest";
+
+                    break;
+
+                case 8:
+
+                    runInputList[0].SelectedItem = "Easy";
+                    runInputList[1].SelectedItem = "Interval";
+                    runInputList[2].SelectedItem = "Rest";
+                    runInputList[3].SelectedItem = "Tempo";
+                    runInputList[4].SelectedItem = "Rest";
+                    runInputList[5].SelectedItem = "Easy";
+                    runInputList[6].SelectedItem = "Long";
+                    runInputList[7].SelectedItem = "Easy";
+
+                    crossTrainInputList[0].SelectedItem = "W - Chest";
+                    crossTrainInputList[1].SelectedItem = "W - Back";
+                    crossTrainInputList[2].SelectedItem = "W - Legs";
+                    crossTrainInputList[3].SelectedItem = "Rest";
+                    crossTrainInputList[4].SelectedItem = "Abs";
+                    crossTrainInputList[5].SelectedItem = "W - Shoulders";
+                    crossTrainInputList[6].SelectedItem = "Rest";
+                    crossTrainInputList[7].SelectedItem = "Rest";
+
+                    break;
+
+                case 9:
+                    runInputList[0].SelectedItem = "Long";
+                    runInputList[1].SelectedItem = "Easy";
+                    runInputList[2].SelectedItem = "Rest";
+                    runInputList[3].SelectedItem = "Tempo";
+                    runInputList[4].SelectedItem = "Easy";
+                    runInputList[5].SelectedItem = "Rest";
+                    runInputList[6].SelectedItem = "Easy";
+                    runInputList[7].SelectedItem = "Interval";
+                    runInputList[8].SelectedItem = "Rest";
+
+                    crossTrainInputList[0].SelectedItem = "Rest";
+                    crossTrainInputList[1].SelectedItem = "Abs";
+                    crossTrainInputList[2].SelectedItem = "W - Chest";
+                    crossTrainInputList[3].SelectedItem = "Rest";
+                    crossTrainInputList[4].SelectedItem = "W - Back";
+                    crossTrainInputList[5].SelectedItem = "W - Legs";
+                    crossTrainInputList[6].SelectedItem = "W - Shoulders";
+                    crossTrainInputList[7].SelectedItem = "Rest";
+                    crossTrainInputList[8].SelectedItem = "Rest";
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void crossTrainCmbBox_ValueChanged(object sender, EventArgs e)
+        {
+            ComboBox crossTrainBox = (ComboBox)sender;
+            string selectedString = (string)crossTrainBox.SelectedItem;
+
+            switch (selectedString)
+            {
+                case "Rest":
+                    crossTrainBox.Background = Brushes.LightBlue;
+                    break;
+                case "W - Shoulders":
+                    crossTrainBox.Background = Brushes.Yellow;
+                    break;
+                case "Abs":
+                    crossTrainBox.Background = Brushes.Yellow;
+                    break;
+                case "W - Chest":
+                    crossTrainBox.Background = Brushes.Yellow;
+                    break;
+                case "W - Back":
+                    crossTrainBox.Background = Brushes.Yellow;
+                    break;
+                case "W - Legs":
+                    crossTrainBox.Background = Brushes.Yellow;
+                    break;
+                default:
+                    break;
 
 
+            }
+        }
+
+        private void runComboBox_ValueChanged(object sender, EventArgs e)
+        {
+            ComboBox runCmbBox = (ComboBox)sender;
+            string selectedString = (string)runCmbBox.SelectedItem;
+
+            switch (selectedString)
+            {
+                case "Rest":
+                    runCmbBox.Background = Brushes.LightBlue;
+                    break;
+                case "Easy":
+                    runCmbBox.Background = Brushes.LightGreen;
+                    break;
+                case "Long":
+                    runCmbBox.Background = Brushes.Green;
+                    break;
+                case "Tempo":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Interval":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                default:
+                    break;
+
+
+            }
+        }
     }
 }
+
+    
+
