@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace WorkoutApp.ActivityTypes
 {
-    class Run
+    class RunButton : Button
     {
 
         private RunTypes runType { get; set; }

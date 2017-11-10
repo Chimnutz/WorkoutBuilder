@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkoutApp.ActivityTypes;
 
 namespace WorkoutAppWPF
 {
@@ -26,11 +27,13 @@ namespace WorkoutAppWPF
         Grid runTypeGrid;
         Grid weightTrainGrid;
         Grid crossTrainGrid;
+        Grid runDefGrid;
 
         List<TextBox> mileageList;
         List<ComboBox> crossTrainInputList;
         List<ComboBox> runInputList;
         List<ComboBox> weightTrainInputList;
+        List<List<RunButton>> runDefInputList;
 
         public MainWindowApp()
         {
@@ -40,6 +43,8 @@ namespace WorkoutAppWPF
 
             createMileageTable((int)double.Parse(numCyclesInput.Text));
             createRunTypeSelectorTable();
+
+            createRunDefinitionTable();
 
             TextBox thisTextBox = mileageList[0];
 
@@ -75,6 +80,10 @@ namespace WorkoutAppWPF
             WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
             WorkoutDefStackPanel.Children.Remove(crossTrainGrid);
             createRunTypeSelectorTable();
+
+            runDefStackPanel.Children.Remove(runDefGrid);
+            createRunDefinitionTable();
+
         }
 
         private void recalcRunTable_click(object sender, EventArgs e)
@@ -233,12 +242,13 @@ namespace WorkoutAppWPF
             crossTrainInputList = new List<ComboBox>();
             runInputList = new List<ComboBox>();
             weightTrainInputList = new List<ComboBox>();
+
             dayNumerGrid = new Grid();
             runTypeGrid = new Grid();
             weightTrainGrid = new Grid();
             crossTrainGrid = new Grid();
 
-            for (int ii = 0; ii < numDaysInCycle; ii++)
+            for (int ii = 0; ii < numDaysInCycle + 1; ii++)
             {
                 // Create Columns
                 ColumnDefinition gridCol1 = new ColumnDefinition();
@@ -258,12 +268,50 @@ namespace WorkoutAppWPF
                 weightTrainGrid.ColumnDefinitions.Add(gridCol3);
                 crossTrainGrid.ColumnDefinitions.Add(gridCol4);
 
+            }
+
+            //Add Day label
+            Label dayText = new Label();
+            dayText.Content = "Day";
+            dayText.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(dayText, 0);
+            Grid.SetColumn(dayText, 0);
+            dayNumerGrid.Children.Add(dayText);
+
+            //Add run label
+            Label runText = new Label();
+            runText.Content = "Run";
+            runText.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(runText, 0);
+            Grid.SetColumn(runText, 0);
+            runTypeGrid.Children.Add(runText);
+
+            //Add workout label
+            Label workoutText = new Label();
+            workoutText.Content = "Work";
+            workoutText.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(workoutText, 0);
+            Grid.SetColumn(workoutText, 0);
+            weightTrainGrid.Children.Add(workoutText);
+
+            //Add cross train label
+            Label crossTrainText = new Label();
+            crossTrainText.Content = "CT";
+            crossTrainText.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(crossTrainText, 0);
+            Grid.SetColumn(crossTrainText, 0);
+            crossTrainGrid.Children.Add(crossTrainText);
+
+
+            for (int ii = 0; ii < numDaysInCycle; ii++)
+            {
+
                 //Add Day Number Text
                 Label dayNumberText = new Label();
-                dayNumberText.Content = "Day " + (ii + 1).ToString();
+                dayNumberText.Content = (ii + 1).ToString();
                 dayNumberText.HorizontalAlignment = HorizontalAlignment.Center;
                 Grid.SetRow(dayNumberText, 0);
-                Grid.SetColumn(dayNumberText, ii);
+                Grid.SetColumn(dayNumberText, ii+1);
                 dayNumerGrid.Children.Add(dayNumberText);
 
                 //Add Cross Train Inputs
@@ -271,13 +319,13 @@ namespace WorkoutAppWPF
                 weightTrainInput.Items.Add("Abs");
                 weightTrainInput.Items.Add("W - Legs");
                 weightTrainInput.Items.Add("W - Chest");
-                weightTrainInput.Items.Add("W - Shoulders");
+                weightTrainInput.Items.Add("W - Should");
                 weightTrainInput.Items.Add("W - Back");
                 weightTrainInput.Items.Add("Rest");
                 weightTrainInput.SelectionChanged += crossTrainCmbBox_ValueChanged;
                 weightTrainInput.SelectedItem = "Rest";
                 Grid.SetRow(weightTrainInput, 0);
-                Grid.SetColumn(weightTrainInput, ii);
+                Grid.SetColumn(weightTrainInput, ii + 1);
                 weightTrainGrid.Children.Add(weightTrainInput);
                 weightTrainInputList.Add(weightTrainInput);
 
@@ -289,7 +337,7 @@ namespace WorkoutAppWPF
                 crossTrainInput.SelectionChanged += crossTrainCmbBox_ValueChanged;
                 crossTrainInput.SelectedItem = "Rest";
                 Grid.SetRow(crossTrainInput, 0);
-                Grid.SetColumn(crossTrainInput, ii);
+                Grid.SetColumn(crossTrainInput, ii + 1);
                 crossTrainGrid.Children.Add(crossTrainInput);
                 crossTrainInputList.Add(crossTrainInput);
 
@@ -303,7 +351,7 @@ namespace WorkoutAppWPF
                 runInput.SelectionChanged += runComboBox_ValueChanged;
                 runInput.SelectedItem = "Rest";
                 Grid.SetRow(runInput, 0);
-                Grid.SetColumn(runInput, ii);
+                Grid.SetColumn(runInput, ii + 1);
                 runTypeGrid.Children.Add(runInput);
                 runInputList.Add(runInput);
 
@@ -317,6 +365,57 @@ namespace WorkoutAppWPF
             setInputSelection(numDaysInCycle);
 
         }
+
+        private void createRunDefinitionTable()
+        {
+            int numDaysInCycle = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
+
+            runDefInputList = new List<List<RunButton>>();
+            runDefGrid = new Grid();
+
+            // Create Columns
+            for (int ii = 0; ii < numDaysInCycle+1; ii++)
+            {
+                ColumnDefinition gridCol1 = new ColumnDefinition();
+                gridCol1.Width = new GridLength(1, GridUnitType.Star);
+
+                runDefGrid.ColumnDefinitions.Add(gridCol1);
+            }
+
+            // Create Rows
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                RowDefinition gridRow = new RowDefinition();
+                runDefGrid.RowDefinitions.Add(gridRow);
+            }
+
+            for (int jj = 0; jj < numCycles; jj++) {
+
+                //Add Cycle Number Text
+                Label cycleNumberText = new Label();
+                cycleNumberText.Content = "Cycle " + (jj + 1).ToString();
+                cycleNumberText.HorizontalAlignment = HorizontalAlignment.Center;
+                Grid.SetRow(cycleNumberText, jj);
+                Grid.SetColumn(cycleNumberText, 0);
+                runDefGrid.Children.Add(cycleNumberText);
+
+                for (int ii = 0; ii < numDaysInCycle; ii++)
+                {
+                    //Add Run Button for each day
+                    RunButton runButton = new RunButton();
+                    //runButton.Click = ;
+                    runButton.Content = "Easy - 4";
+                    runButton.Background = Brushes.LightGreen;
+                    Grid.SetRow(runButton, jj);
+                    Grid.SetColumn(runButton, ii+1);
+                    runDefGrid.Children.Add(runButton);
+                }
+            }
+
+            runDefStackPanel.Children.Add(runDefGrid);
+        }
+
 
         private void CrossTrainInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -350,7 +449,7 @@ namespace WorkoutAppWPF
                     weightTrainInputList[1].SelectedItem = "W - Back";
                     weightTrainInputList[2].SelectedItem = "W - Legs";
                     weightTrainInputList[3].SelectedItem = "Abs";
-                    weightTrainInputList[4].SelectedItem = "W - Shoulders";
+                    weightTrainInputList[4].SelectedItem = "W - Should";
                     weightTrainInputList[5].SelectedItem = "Rest";
                     weightTrainInputList[6].SelectedItem = "Rest";
 
@@ -381,7 +480,7 @@ namespace WorkoutAppWPF
                     weightTrainInputList[2].SelectedItem = "W - Legs";
                     weightTrainInputList[3].SelectedItem = "Rest";
                     weightTrainInputList[4].SelectedItem = "Abs";
-                    weightTrainInputList[5].SelectedItem = "W - Shoulders";
+                    weightTrainInputList[5].SelectedItem = "W - Should";
                     weightTrainInputList[6].SelectedItem = "Rest";
                     weightTrainInputList[7].SelectedItem = "Rest";
 
@@ -414,7 +513,7 @@ namespace WorkoutAppWPF
                     weightTrainInputList[3].SelectedItem = "Rest";
                     weightTrainInputList[4].SelectedItem = "W - Back";
                     weightTrainInputList[5].SelectedItem = "W - Legs";
-                    weightTrainInputList[6].SelectedItem = "W - Shoulders";
+                    weightTrainInputList[6].SelectedItem = "W - Should";
                     weightTrainInputList[7].SelectedItem = "Rest";
                     weightTrainInputList[8].SelectedItem = "Rest";
 
@@ -435,7 +534,7 @@ namespace WorkoutAppWPF
                 case "Rest":
                     crossTrainBox.Background = Brushes.LightBlue;
                     break;
-                case "W - Shoulders":
+                case "W - Should":
                     crossTrainBox.Background = Brushes.Yellow;
                     break;
                 case "Abs":

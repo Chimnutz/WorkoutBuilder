@@ -149,7 +149,7 @@
 
                         <DockPanel Grid.Row = "2">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
+                                <StackPanel Name = "runDefStackPanel" Orientation="Vertical">
                                     <!--Controls are created programatically-->
                                 </StackPanel>
                             </ScrollViewer>
