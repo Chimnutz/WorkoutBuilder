@@ -132,17 +132,14 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="5"/>
-                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="4*"/>
                         </Grid.RowDefinitions>
 
                         <DockPanel Grid.Row = "0">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Name = "WorkoutDefStackPanel" Orientation="Vertical">
-                                    <Grid Name="dayNumerGrid"></Grid>
-                                    <Grid Name="crossTrainGrid"></Grid>
-                                    <Grid Name="runTypeGrid"></Grid>
                                     <Button Name="recalcRunTable" Click="recalcRunTable_click" Content="Reset Run Table" Margin="0,5,0,0" Width="238" HorizontalAlignment="Left"></Button>
-
+                                    <!--Grids for other containers created in code-->
                                 </StackPanel>
                             </ScrollViewer>
                         </DockPanel>
@@ -153,8 +150,7 @@
                         <DockPanel Grid.Row = "2">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Name = "RunDefStackPanel" Orientation="Vertical">
-
-
+                                    <!--Controls are created programatically-->
                                 </StackPanel>
                             </ScrollViewer>
                         </DockPanel>
