@@ -400,6 +400,10 @@ namespace WorkoutAppWPF
                 Grid.SetColumn(cycleNumberText, 0);
                 runDefGrid.Children.Add(cycleNumberText);
 
+                //create a new list for the row
+                List<RunButton> cycleRunDefInputList =  new List<RunButton>();
+                runDefInputList.Add(cycleRunDefInputList);
+
                 for (int ii = 0; ii < numDaysInCycle; ii++)
                 {
                     //Add Run Button for each day
@@ -410,6 +414,9 @@ namespace WorkoutAppWPF
                     Grid.SetRow(runButton, jj);
                     Grid.SetColumn(runButton, ii+1);
                     runDefGrid.Children.Add(runButton);
+
+                    //add the control to the list
+                    cycleRunDefInputList.Add(runButton);
                 }
             }
 
@@ -566,6 +573,37 @@ namespace WorkoutAppWPF
         {
             ComboBox runCmbBox = (ComboBox)sender;
             string selectedString = (string)runCmbBox.SelectedItem;
+
+            switch (selectedString)
+            {
+                case "Rest":
+                    runCmbBox.Background = Brushes.LightBlue;
+                    break;
+                case "Easy":
+                    runCmbBox.Background = Brushes.LightGreen;
+                    break;
+                case "Long":
+                    runCmbBox.Background = Brushes.Green;
+                    break;
+                case "Tempo":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Interval":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                default:
+                    break;
+
+
+            }
+        }
+
+        //ToDo: this method should be combined with teh other one
+        private void runTypeComboBox_ValueChanged(object sender, EventArgs e)
+        {
+            ComboBox runCmbBox = (ComboBox)sender;
+            
+            string selectedString = ((ComboBoxItem)runCmbBox.SelectedItem).Content.ToString();
 
             switch (selectedString)
             {
