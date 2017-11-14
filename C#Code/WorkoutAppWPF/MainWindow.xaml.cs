@@ -67,6 +67,10 @@ namespace WorkoutAppWPF
             numCyclesInput.TextChanged += numCycles_Changed;
             numDaysInput.TextChanged += numCycles_Changed;
 
+            speedSlider.Value = 8;
+            longSlider.Value = 30;
+            tempoSlider.Value = 12;
+
         }
 
         private void recalcMileage_click(object sender, EventArgs e)
@@ -421,6 +425,22 @@ namespace WorkoutAppWPF
             }
 
             runDefStackPanel.Children.Add(runDefGrid);
+        }
+
+        private RunButton createRunButton(int cycleWeek, int cycleDay)
+        {
+            RunButton runButton = new RunButton();
+
+            //get cycle mileage
+            double cycleMileage = double.Parse(mileageList[cycleWeek].Text);
+
+            //get run type
+            String runType = runInputList[cycleDay].SelectedItem.ToString();
+
+
+
+            return runButton;
+
         }
 
 

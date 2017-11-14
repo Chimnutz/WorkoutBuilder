@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WorkoutAppWPF"
         mc:Ignorable="d"
-        Title="Trainging Plan Builder" Height="900" Width="1500">
+        Title="Training Plan Builder" Height="900" Width="1500">
 
 
 
@@ -130,9 +130,11 @@
                     <!--Panel to select run type-->
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5*"/>
                             <RowDefinition Height="5"/>
-                            <RowDefinition Height="4*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
 
                         <DockPanel Grid.Row = "0">
@@ -148,6 +150,50 @@
                         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
 
                         <DockPanel Grid.Row = "2">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Name = "runlevelSliders" Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Speed Work [%]" Grid.Column="0" HorizontalAlignment="Center"></Label>
+                                        <Label Content="Tempo Runs [%]" Grid.Column="1" HorizontalAlignment="Center"></Label>
+                                        <Label Content="Long Runs [%]" Grid.Column="2" HorizontalAlignment="Center"></Label>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <DockPanel VerticalAlignment="Center" Margin="10" Grid.Column="0">
+                                            <TextBox Text="{Binding ElementName=speedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                                            <Slider Maximum="50" Name="speedSlider" />
+                                        </DockPanel>
+
+                                        <DockPanel VerticalAlignment="Center" Margin="10" Grid.Column="1">
+                                            <TextBox Text="{Binding ElementName=tempoSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                                            <Slider Maximum="50" Name="tempoSlider" />
+                                        </DockPanel>
+
+                                        <DockPanel VerticalAlignment="Center" Margin="10" Grid.Column="2">
+                                            <TextBox Text="{Binding ElementName=longSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                                            <Slider Maximum="50" Name="longSlider" />
+                                        </DockPanel>
+
+                                    </Grid>
+
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+
+                        <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" />
+
+                        <DockPanel Grid.Row = "4">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Name = "runDefStackPanel" Orientation="Vertical">
                                     <!--Controls are created programatically-->
