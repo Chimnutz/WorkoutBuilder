@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorkoutApp
+namespace WorkoutAppWPF
 {
     public enum RunTypes{Easy,Long,Tempo,Interval,Repition,Rest}
     public enum Units {Yards,Meters,Miles,KiloMeters}

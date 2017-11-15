@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WorkoutApp.ActivityTypes;
+using WorkoutAppWPF.ActivityTypes;
 
 namespace WorkoutAppWPF
 {
@@ -411,10 +411,10 @@ namespace WorkoutAppWPF
                 for (int ii = 0; ii < numDaysInCycle; ii++)
                 {
                     //Add Run Button for each day
-                    RunButton runButton = new RunButton();
+                    RunButton runButton = createRunButton(jj, ii);
+
                     //runButton.Click = ;
-                    runButton.Content = "Easy - 4";
-                    runButton.Background = Brushes.LightGreen;
+                    //runButton.Content = "Easy - 4";
                     Grid.SetRow(runButton, jj);
                     Grid.SetColumn(runButton, ii+1);
                     runDefGrid.Children.Add(runButton);
@@ -437,7 +437,48 @@ namespace WorkoutAppWPF
             //get run type
             String runType = runInputList[cycleDay].SelectedItem.ToString();
 
+            switch (runType)
+            {
+                case "Easy":
+                    runButton.setRunType(RunTypes.Easy);
+                    runButton.addWorkout(0,Units.Miles,Pace.Easy);
+                    runButton.addRepCool(0, Units.Miles, Pace.Easy);
+                    break;
+                case "Long":
+                    runButton.setRunType(RunTypes.Long);
+                    runButton.addWorkout((cycleMileage*longSlider.Value/100.0), Units.Miles, Pace.Easy);
+                    runButton.addRepCool(0,Units.Miles,Pace.Easy);
+                    break;
+                case "Tempo":
+                    runButton.setRunType(RunTypes.Tempo);
+                    runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
+                    runButton.addWorkout((cycleMileage * tempoSlider.Value / 100.0), Units.Miles, Pace.Easy);
+                    runButton.addRepCool(0, Units.Miles, Pace.Easy);
+                    runButton.addCooldown(1.5, Units.Miles, Pace.Easy);
+                    break;
+                case "Interval":
 
+                    double intervalMileage = (cycleMileage * speedSlider.Value / 100.0);
+                    double repDistance = 400.0;
+                    int reps = (int)Math.Ceiling(intervalMileage / convertToMiles(repDistance, Units.Meters));
+
+                    runButton.setRunType(RunTypes.Interval);
+                    runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
+
+                    for (int ii = 0; ii< reps; ii++)
+                    {
+                        runButton.addWorkout(repDistance, Units.Meters, Pace.Interval);
+                        runButton.addRepCool(repDistance, Units.Meters, Pace.Easy);
+                    }
+
+                    runButton.addCooldown(1.5, Units.Miles, Pace.Easy);
+                    break;
+                case "Rest":
+                    runButton.setRunType(RunTypes.Rest);
+                    break;
+                default:
+                    throw new Exception("Undefined run type");
+            }
 
             return runButton;
 
@@ -647,6 +688,36 @@ namespace WorkoutAppWPF
 
 
             }
+        }
+        private double convertToMiles(double distance, Units units)
+        {
+            double unitFactor = 1;
+            double convertedMiles = 0;
+
+            switch (units)
+            {
+                case Units.Miles:
+                    unitFactor = 1;
+                    break;
+
+                case Units.KiloMeters:
+                    unitFactor = 0.621371;
+                    break;
+
+                case Units.Meters:
+                    unitFactor = 0.621371 / 1000.0;
+                    break;
+
+                case Units.Yards:
+                    unitFactor = 0.000568182;
+                    break;
+
+                default:
+                    throw new Exception("unspecied units defined");
+            }
+
+            convertedMiles = unitFactor * distance;
+            return convertedMiles;
         }
     }
 }

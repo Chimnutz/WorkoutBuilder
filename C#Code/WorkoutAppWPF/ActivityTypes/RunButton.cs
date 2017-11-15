@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 
-namespace WorkoutApp.ActivityTypes
+namespace WorkoutAppWPF.ActivityTypes
 {
     class RunButton : Button
     {
@@ -15,27 +16,52 @@ namespace WorkoutApp.ActivityTypes
         private double easyMileage { get; set; }
         private double workoutMileage { get; set; }
         
-        private int numberOfReps { get; set; }
+        private int numberOfReps { get; set; } = 0;
 
-        private double warmupDistance { get; set; }
-        private Units warmupDistanceUnits { get; set; }
-        private Pace warmupPace { get; set; }
+        private double warmupDistance { get; set; } = 0;
+        private Units warmupDistanceUnits { get; set; } = Units.Miles;
+        private Pace warmupPace { get; set; } = Pace.Easy;
 
-        private List<double> repDistance { get; set; }
-        private List<Units> repDistanceUnits { get; set; }
-        private List<Pace> repPace { get; set; }
+        private List<double> repDistance { get; set; } = new List<double>();
+        private List<Units> repDistanceUnits { get; set; } = new List<Units>();
+        private List<Pace> repPace { get; set; } = new List<Pace>();
 
-        private List<double> repCoolDistance { get; set; }
-        private List<Units> repCoolDistanceUnits { get; set; }
-        private List<Pace> repCoolPace { get; set; }
+        private List<double> repCoolDistance { get; set; } = new List<double>();
+        private List<Units> repCoolDistanceUnits { get; set; } = new List<Units>();
+        private List<Pace> repCoolPace { get; set; } = new List<Pace>();
 
-        private double coolDistance { get; set; }
-        private Units coolDistanceUnits { get; set; }
-        private Pace coolPace { get; set; }
+        private double coolDistance { get; set; } = 0;
+        private Units coolDistanceUnits { get; set; } = Units.Miles;
+        private Pace coolPace { get; set; } = Pace.Easy;
 
         public void setRunType(RunTypes runType)
         {
             this.runType = runType;
+
+            switch (runType)
+            {
+                case RunTypes.Rest:
+                    this.Background = Brushes.LightBlue;
+                    break;
+                case RunTypes.Easy:
+                    this.Background = Brushes.LightGreen;
+                    break;
+                case RunTypes.Long:
+                    this.Background = Brushes.Green;
+                    break;
+                case RunTypes.Interval:
+                    this.Background = Brushes.Orange;
+                    break;
+                case RunTypes.Tempo:
+                    this.Background = Brushes.Orange;
+                    break;
+                default:
+                    this.Background = Brushes.DarkGray;
+                    break;
+            }
+
+            //update label
+            this.Content = this.runType.ToString() +" "+ (Math.Round(totalMileage * 2) / 2).ToString();
         }
 
         public void addWarmup(double distance, Units units, Pace pace)
@@ -43,6 +69,10 @@ namespace WorkoutApp.ActivityTypes
             this.warmupDistance = distance;
             this.warmupDistanceUnits = units;
             this.warmupPace = pace;
+
+            calculateTotalMileage();
+            calculateEasyMileage();
+            calculateWorkoutMileage();
         }
 
         public void addWorkout(double distance, Units units, Pace pace)
@@ -50,6 +80,10 @@ namespace WorkoutApp.ActivityTypes
             this.repDistance.Add(distance);
             this.repDistanceUnits.Add(units);
             this.repPace.Add(pace);
+
+            calculateTotalMileage();
+            calculateEasyMileage();
+            calculateWorkoutMileage();
 
             //determine number of reps based on list length
             this.numberOfReps = this.repDistance.Count;
@@ -62,6 +96,10 @@ namespace WorkoutApp.ActivityTypes
             this.repCoolDistance.Add(distance);
             this.repCoolDistanceUnits.Add(units);
             this.repCoolPace.Add(pace);
+
+            calculateTotalMileage();
+            calculateEasyMileage();
+            calculateWorkoutMileage();
         }
 
         public void addCooldown(double distance, Units units, Pace pace)
@@ -69,6 +107,10 @@ namespace WorkoutApp.ActivityTypes
             this.coolDistance = distance;
             this.coolDistanceUnits = units;
             this.coolPace = pace;
+
+            calculateTotalMileage();
+            calculateEasyMileage();
+            calculateWorkoutMileage();
         }
 
         public RunTypes getRunType()
@@ -168,7 +210,7 @@ namespace WorkoutApp.ActivityTypes
             }
 
             double repCoolDistance = 0;
-            for (int ii = 0; ii < this.repDistance.Count; ii++)
+            for (int ii = 0; ii < this.repCoolDistance.Count; ii++)
             {
                 repCoolDistance = repCoolDistance + convertToMiles(this.repCoolDistance[ii], this.repCoolDistanceUnits[ii]);
             }
@@ -178,6 +220,9 @@ namespace WorkoutApp.ActivityTypes
             totalMileage = warmupDistance + repDistance + repCoolDistance + coolDistance;
 
             this.totalMileage = totalMileage;
+
+            //update label
+            this.Content = this.runType.ToString()+ " " + (Math.Round(totalMileage*2)/2).ToString();
 
         }
 
@@ -200,7 +245,7 @@ namespace WorkoutApp.ActivityTypes
                 }
 
                 repCoolDistance = 0;
-                for (int ii = 0; ii < this.repDistance.Count; ii++)
+                for (int ii = 0; ii < this.repCoolDistance.Count; ii++)
                 {
                     repCoolDistance = repCoolDistance + convertToMiles(this.repCoolDistance[ii], this.repCoolDistanceUnits[ii]);
                 }
@@ -214,7 +259,7 @@ namespace WorkoutApp.ActivityTypes
                 warmDistance = convertToMiles(this.warmupDistance, this.warmupDistanceUnits);
 
                 repCoolDistance = 0;
-                for (int ii = 0; ii < this.repDistance.Count; ii++)
+                for (int ii = 0; ii < this.repCoolDistance.Count; ii++)
                 {
                     repCoolDistance = repCoolDistance + convertToMiles(this.repCoolDistance[ii], this.repCoolDistanceUnits[ii]);
                 }
