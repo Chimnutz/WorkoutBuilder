@@ -394,6 +394,8 @@ namespace WorkoutAppWPF
                 runDefGrid.RowDefinitions.Add(gridRow);
             }
 
+            double lastDistance = 0;
+
             for (int jj = 0; jj < numCycles; jj++) {
 
                 //Add Cycle Number Text
@@ -408,20 +410,89 @@ namespace WorkoutAppWPF
                 List<RunButton> cycleRunDefInputList =  new List<RunButton>();
                 runDefInputList.Add(cycleRunDefInputList);
 
+                int numEasyRuns = 0;
+                double totalMileage = 0;
+
+                List<int> easyIndex = new List<int>();
+                List<double> previousMileage = new List<double>();
+
+                List<RunButton> cycleRunDefList = new List<RunButton>();
+
+                
+
                 for (int ii = 0; ii < numDaysInCycle; ii++)
                 {
                     //Add Run Button for each day
                     RunButton runButton = createRunButton(jj, ii);
 
-                    //runButton.Click = ;
-                    //runButton.Content = "Easy - 4";
+                    //get run type
+                    String runType = runInputList[ii].SelectedItem.ToString();
+
+                    if(runType == "Easy")
+                    {
+                        numEasyRuns++;
+                        easyIndex.Add(ii); //add the index of the easy day
+                        previousMileage.Add(lastDistance);
+                    }
+
+                    runButton.Click += runButton_click;
                     Grid.SetRow(runButton, jj);
                     Grid.SetColumn(runButton, ii+1);
                     runDefGrid.Children.Add(runButton);
+                    cycleRunDefList.Add(runButton);
+
+                    totalMileage = totalMileage + runButton.getTotalMileage();
+                    lastDistance = runButton.getTotalMileage();
 
                     //add the control to the list
                     cycleRunDefInputList.Add(runButton);
                 }
+
+                runDefInputList.Add(cycleRunDefList);
+
+
+                //figure out easy miles
+                double desiredCycleMiles = double.Parse(mileageList[jj].Text);
+                double remainingMiles = Math.Max((desiredCycleMiles - totalMileage),0);
+                double dailyMiles = Math.Floor(remainingMiles / numEasyRuns);
+                int remainder = (int)Math.Round(remainingMiles % numEasyRuns);
+
+                //sort easy days based on how hard the previous day was
+                var sorted = previousMileage
+                    .Select((x, i) => new KeyValuePair<double, int>(x, i))
+                    .OrderBy(x => x.Key)
+                    .ToList();
+
+                List<double> sortedValue = sorted.Select(x => x.Key).ToList();
+                List<int> idx = sorted.Select(x => x.Value).ToList();
+
+                //divide up easy miles
+                double[] easyMiles = new double[idx.Count];
+                int lastIndex = 0;
+
+                //add extra miles to easist days
+                for (int ii = 0; ii < remainder; ii++)
+                {
+                    easyMiles[ii] = dailyMiles + 1;
+                    lastIndex = ii;
+
+                }
+
+                //use base miles for harder days
+                for (int ii = lastIndex + 1; ii < idx.Count; ii++)
+                {
+                    easyMiles[ii] = dailyMiles;
+                }
+
+
+                //set the value of the easy controls
+                for (int ii = 0; ii < idx.Count; ii++)
+                {
+                    int thisControlIndex = easyIndex[idx[ii]];
+                    cycleRunDefInputList[thisControlIndex].addWorkout(1, easyMiles[ii], Units.Miles, Pace.Easy, 0, Units.Miles, Pace.Easy);
+                }
+
+
             }
 
             runDefStackPanel.Children.Add(runDefGrid);
@@ -441,35 +512,29 @@ namespace WorkoutAppWPF
             {
                 case "Easy":
                     runButton.setRunType(RunTypes.Easy);
-                    runButton.addWorkout(0,Units.Miles,Pace.Easy);
-                    runButton.addRepCool(0, Units.Miles, Pace.Easy);
+                    runButton.addWorkout(1,0,Units.Miles,Pace.Easy, 0, Units.Miles, Pace.Easy);
                     break;
                 case "Long":
                     runButton.setRunType(RunTypes.Long);
-                    runButton.addWorkout((cycleMileage*longSlider.Value/100.0), Units.Miles, Pace.Easy);
-                    runButton.addRepCool(0,Units.Miles,Pace.Easy);
+                    runButton.addWorkout(1,Math.Round(cycleMileage*longSlider.Value/100.0*2)/2, Units.Miles, Pace.Long, 0, Units.Miles, Pace.Easy);
+
                     break;
                 case "Tempo":
                     runButton.setRunType(RunTypes.Tempo);
-                    runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
-                    runButton.addWorkout((cycleMileage * tempoSlider.Value / 100.0), Units.Miles, Pace.Easy);
-                    runButton.addRepCool(0, Units.Miles, Pace.Easy);
+                    runButton.addWarmup(1.5, Units.Miles, Pace.HMP);
+                    runButton.addWorkout(1, Math.Round(cycleMileage * tempoSlider.Value / 100.0*2)/2, Units.Miles, Pace.HMP, 0, Units.Miles, Pace.Easy);
                     runButton.addCooldown(1.5, Units.Miles, Pace.Easy);
                     break;
                 case "Interval":
 
-                    double intervalMileage = (cycleMileage * speedSlider.Value / 100.0);
+                    double intervalMileage = Math.Round(cycleMileage * speedSlider.Value / 100.0*2)/2;
                     double repDistance = 400.0;
                     int reps = (int)Math.Ceiling(intervalMileage / convertToMiles(repDistance, Units.Meters));
 
                     runButton.setRunType(RunTypes.Interval);
                     runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
 
-                    for (int ii = 0; ii< reps; ii++)
-                    {
-                        runButton.addWorkout(repDistance, Units.Meters, Pace.Interval);
-                        runButton.addRepCool(repDistance, Units.Meters, Pace.Easy);
-                    }
+                    runButton.addWorkout(reps, repDistance, Units.Meters, Pace.Interval, repDistance, Units.Meters, Pace.Easy);
 
                     runButton.addCooldown(1.5, Units.Miles, Pace.Easy);
                     break;
@@ -652,14 +717,30 @@ namespace WorkoutAppWPF
                 case "Interval":
                     runCmbBox.Background = Brushes.Orange;
                     break;
+                case "HMP":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "MP":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Hills":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "TenK":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "FiveK":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Repition":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
                 default:
                     break;
-
-
             }
         }
 
-        //ToDo: this method should be combined with teh other one
+        //ToDo: this method should be combined with the other one, need to add combo box items rather than strings to the list
         private void runTypeComboBox_ValueChanged(object sender, EventArgs e)
         {
             ComboBox runCmbBox = (ComboBox)sender;
@@ -683,12 +764,214 @@ namespace WorkoutAppWPF
                 case "Interval":
                     runCmbBox.Background = Brushes.Orange;
                     break;
+                case "HMP":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "MP":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Hills":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "TenK":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "FiveK":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Repition":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
                 default:
                     break;
 
 
             }
         }
+
+        private void runButton_click(object sender, EventArgs e)
+        {
+            RunButton runButton = (RunButton)sender;
+
+            String stringRunType = runButton.getRunType().ToString();
+
+            runType.SelectedValue = runButton.getRunType().ToString();
+            totalDistanceDisp.Text = runButton.getTotalMileage().ToString();
+            totalDistanceUnits.SelectedValue = "Miles";
+
+            int numSets = runButton.getRepDistance().Count;
+
+            List<int> reps = runButton.getNumberOfReps();
+
+            List<double> repDistance = runButton.getRepDistance();
+            List<Units> repDistanceUnits = runButton.getRepUnits();
+            List<Pace> repPace = runButton.getRepPace();
+
+            List<double> repCoolDistance = runButton.getRepCoolDistance();
+            List<Units> repCoolDistanceUnits = runButton.getRepCoolUnits();
+            List<Pace> repCoolPace = runButton.getRepCoolPace();
+
+            if (numSets == 0)
+            {
+                repsInput.Text = "0";
+                intervalDistanceInput.Text = "0";
+                coolDistanceInput.Text = "0";
+                intervalDistanceUnits.SelectedValue = "Miles";
+                paceInput.SelectedValue = "Easy";
+            }
+            else
+            {
+                for (int ii = 0; ii < numSets; ii++)
+                {
+                    repsInput.Text = reps[ii].ToString();
+                    intervalDistanceInput.Text = repDistance[ii].ToString();
+                    coolDistanceInput.Text = repCoolDistance[ii].ToString();
+                    intervalDistanceUnits.SelectedValue = repDistanceUnits[ii].ToString();
+                    paceInput.SelectedValue = repPace[ii].ToString();
+                }
+            }
+            warmupDistanceInput.Text = runButton.getWarmupDistance().ToString();
+            warmupDistanceUnits.SelectedValue = runButton.getWarmupUnits().ToString();
+
+            coolDownDistanceInput.Text = runButton.getCoolDistance().ToString();
+            coolDownDistanceUnits.SelectedValue = runButton.getCoolUnits().ToString();
+
+        }
+
+        private void addSet_click(object sender, EventArgs e)
+        {
+            StackPanel setPanel = new StackPanel();
+            setPanel.Orientation = Orientation.Vertical;
+
+            Label setLabel = new Label();
+            setLabel.Content = "Set 1";
+            setPanel.Children.Add(setLabel);
+
+            Grid labelGrid = new Grid();
+            setPanel.Children.Add(labelGrid);
+
+            // Create Columns for labels
+            ColumnDefinition gridCol1 = new ColumnDefinition();
+            gridCol1.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol2 = new ColumnDefinition();
+            gridCol2.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol3 = new ColumnDefinition();
+            gridCol3.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol4 = new ColumnDefinition();
+            gridCol4.Width = new GridLength(1, GridUnitType.Star);
+
+            labelGrid.ColumnDefinitions.Add(gridCol1);
+            labelGrid.ColumnDefinitions.Add(gridCol2);
+            labelGrid.ColumnDefinitions.Add(gridCol3);
+            labelGrid.ColumnDefinitions.Add(gridCol4);
+
+            Label repsLabel = new Label();
+            repsLabel.Content = "Reps";
+            Grid.SetRow(repsLabel, 0);
+            Grid.SetColumn(repsLabel, 0);
+            labelGrid.Children.Add(repsLabel);
+
+            Label distLabel = new Label();
+            distLabel.Content = "Dist";
+            Grid.SetRow(distLabel, 0);
+            Grid.SetColumn(distLabel, 1);
+            labelGrid.Children.Add(distLabel);
+
+            Label coolLabel = new Label();
+            coolLabel.Content = "Cool";
+            Grid.SetRow(coolLabel, 0);
+            Grid.SetColumn(coolLabel, 2);
+            labelGrid.Children.Add(coolLabel);
+
+            Label unitsLabel = new Label();
+            repsLabel.Content = "Units";
+            Grid.SetRow(unitsLabel, 0);
+            Grid.SetColumn(unitsLabel, 3);
+            labelGrid.Children.Add(unitsLabel);
+
+            // Create Columns for controls
+            ColumnDefinition gridCol5 = new ColumnDefinition();
+            gridCol5.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol6 = new ColumnDefinition();
+            gridCol6.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol7 = new ColumnDefinition();
+            gridCol7.Width = new GridLength(1, GridUnitType.Star);
+            ColumnDefinition gridCol8 = new ColumnDefinition();
+            gridCol8.Width = new GridLength(1, GridUnitType.Star);
+
+            Grid inputGrid = new Grid();
+            inputGrid.ColumnDefinitions.Add(gridCol5);
+            inputGrid.ColumnDefinitions.Add(gridCol6);
+            inputGrid.ColumnDefinitions.Add(gridCol7);
+            inputGrid.ColumnDefinitions.Add(gridCol8);
+
+            setPanel.Children.Add(inputGrid);
+
+            TextBox repsTextInput = new TextBox();
+            repsTextInput.Text = "0";
+            repsTextInput.Margin = new Thickness(0,0,5,0);
+            Grid.SetRow(repsTextInput, 0);
+            Grid.SetColumn(repsTextInput, 0);
+            inputGrid.Children.Add(repsTextInput);
+
+            TextBox distTextInput = new TextBox();
+            distTextInput.Text = "0";
+            distTextInput.Margin = new Thickness(0, 0, 5, 0);
+            Grid.SetRow(distTextInput, 0);
+            Grid.SetColumn(distTextInput, 1);
+            inputGrid.Children.Add(distTextInput);
+
+            TextBox coolTextInput = new TextBox();
+            coolTextInput.Margin = new Thickness(0, 0, 5, 0);
+            coolTextInput.Text = "0";
+            Grid.SetRow(coolTextInput, 0);
+            Grid.SetColumn(coolTextInput, 2);
+            inputGrid.Children.Add(coolTextInput);
+
+            ComboBox unitsComboInput = new ComboBox();
+            unitsComboInput.Margin = new Thickness(0, 0, 5, 0);
+            unitsComboInput.Items.Add("Yards");
+            unitsComboInput.Items.Add("Meters");
+            unitsComboInput.Items.Add("Miles");
+            unitsComboInput.Items.Add("KiloMeters");
+            unitsComboInput.SelectedValue = "Miles";
+
+            Grid.SetRow(unitsComboInput, 0);
+            Grid.SetColumn(unitsComboInput, 3);
+            inputGrid.Children.Add(unitsComboInput);
+
+            Label paceLabel = new Label();
+            paceLabel.Content = "Pace";
+            setPanel.Children.Add(paceLabel);
+
+            ComboBox paceComboInput = new ComboBox();
+            paceComboInput.Items.Add("Easy");
+            paceComboInput.Items.Add("Long");
+            paceComboInput.Items.Add("HMP");
+            paceComboInput.Items.Add("MP");
+            paceComboInput.Items.Add("FiveK");
+            paceComboInput.Items.Add("TenK");
+            paceComboInput.Items.Add("Interval");
+            paceComboInput.Items.Add("Repition");
+            paceComboInput.Items.Add("Hills");
+            //paceComboInput.SelectedValuePath = "Content";
+            paceComboInput.SelectionChanged += runComboBox_ValueChanged;
+            paceComboInput.SelectedValue = "Easy";
+            paceComboInput.Width = 130;
+            paceComboInput.HorizontalAlignment = HorizontalAlignment.Left;
+
+
+            setPanel.Children.Add(paceComboInput);
+
+            setPanelStack.Children.Add(setPanel);
+
+        }
+
+        private void removeSet_click(object sender, EventArgs e)
+        {
+
+        }
+
         private double convertToMiles(double distance, Units units)
         {
             double unitFactor = 1;

@@ -213,7 +213,7 @@
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <StackPanel Name = "runViewStackPanel" Orientation="Vertical">
                             <Label Content="Run Type"></Label>
-                            <ComboBox Name="runType" SelectionChanged="runTypeComboBox_ValueChanged" SelectedItem="Rest" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
+                            <ComboBox Name="runType" SelectedValuePath="Content" SelectionChanged="runTypeComboBox_ValueChanged" SelectedValue="Rest" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
                                 <ComboBoxItem Content="Easy"/>
                                 <ComboBoxItem Content="Long"/>
                                 <ComboBoxItem Content="Tempo"/>
@@ -237,7 +237,7 @@
 
                                 <TextBox Name="totalDistanceDisp" IsEnabled="False" Margin="0,0,5,0"></TextBox>
 
-                                <ComboBox Name="totalDistanceUnits" IsEnabled="False" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="1">
+                                <ComboBox Name="totalDistanceUnits" SelectedValuePath="Content" IsEnabled="False" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="1">
                                     <ComboBoxItem Content="Yards"/>
                                     <ComboBoxItem Content="Meters"/>
                                     <ComboBoxItem Content="Miles"/>
@@ -264,7 +264,7 @@
 
                                 <TextBox Name="warmupDistanceInput" Margin="0,0,5,0" Grid.ColumnSpan="2"></TextBox>
 
-                                <ComboBox Name="warmupDistanceUnits" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Grid.Column="2">
+                                <ComboBox Name="warmupDistanceUnits" SelectedValuePath="Content" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Grid.Column="2">
                                     <ComboBoxItem Content="Yards"/>
                                     <ComboBoxItem Content="Meters"/>
                                     <ComboBoxItem Content="Miles"/>
@@ -273,6 +273,8 @@
 
                             </Grid>
 
+                            <StackPanel Name = "setPanelStack">
+                                
                             <Label Content="Set 1" Margin="0 10 0 0"></Label>
 
                             <Grid>
@@ -300,7 +302,7 @@
                                 <TextBox Name="intervalDistanceInput" Margin="0,0,5,0" Grid.Column="1"></TextBox>
                                 <TextBox Name="coolDistanceInput" Margin="0,0,5,0" Grid.Column="2"></TextBox>
 
-                                <ComboBox Name="intervalDistanceUnits" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="4">
+                                    <ComboBox Name="intervalDistanceUnits" SelectedValuePath="Content" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="4">
                                     <ComboBoxItem Content="Yards"/>
                                     <ComboBoxItem Content="Meters"/>
                                     <ComboBoxItem Content="Miles"/>
@@ -310,16 +312,29 @@
                             </Grid>
 
                             <Label Content="Pace"></Label>
-                            <ComboBox Name="paceInput" SelectionChanged="runTypeComboBox_ValueChanged" SelectedItem="Rest" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
+                                <ComboBox Name="paceInput" SelectedValuePath="Content" SelectionChanged="runTypeComboBox_ValueChanged" SelectedValue ="Easy" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
                                 <ComboBoxItem Content="Easy"/>
+                                <ComboBoxItem Content="Long"/>
                                 <ComboBoxItem Content="HMP"/>
                                 <ComboBoxItem Content="MP"/>
+                                <ComboBoxItem Content="FiveK"/>
+                                <ComboBoxItem Content="TenK"/>
                                 <ComboBoxItem Content="Interval"/>
                                 <ComboBoxItem Content="Repition"/>
                                 <ComboBoxItem Content="Hills"/>
                             </ComboBox>
 
-                            <Button Name="addSet" Content="Add Set" Margin="0 10 0 0"></Button>
+                            </StackPanel>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Name="addSet" Click = "addSet_click" Content="Add Set" Margin="0 10 5 0 " Grid.Column = "0"></Button>
+                                <Button Name="removeSet" Click = "removeSet_click" Content="Remove Set" Margin="5 10 0 0" Grid.Column = "1"></Button>
+                            </Grid>
+                            
 
                             <Grid Margin="0 10 0 0">
                                 <Grid.ColumnDefinitions>
@@ -338,7 +353,7 @@
 
                                 <TextBox Name="coolDownDistanceInput" Margin="0,0,5,0"></TextBox>
 
-                                <ComboBox Name="coolDownDistanceUnits" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="1">
+                                <ComboBox Name="coolDownDistanceUnits" SelectedValuePath="Content" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="1">
                                     <ComboBoxItem Content="Yards"/>
                                     <ComboBoxItem Content="Meters"/>
                                     <ComboBoxItem Content="Miles"/>
