@@ -59,7 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="ActivityTypes\RunButton.cs" />
+    <Compile Include="CustomControls\SetPanel.cs" />
+    <Compile Include="CustomControls\RunButton.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

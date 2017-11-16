@@ -212,6 +212,7 @@
                 <DockPanel Grid.Column="4" Margin="10 10 10 10">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <StackPanel Name = "runViewStackPanel" Orientation="Vertical">
+                            <Button Content="Update Run" Name="updateRunButton" Click="updateRunButton_Click"></Button>
                             <Label Content="Run Type"></Label>
                             <ComboBox Name="runType" SelectedValuePath="Content" SelectionChanged="runTypeComboBox_ValueChanged" SelectedValue="Rest" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
                                 <ComboBoxItem Content="Easy"/>
@@ -273,57 +274,8 @@
 
                             </Grid>
 
-                            <StackPanel Name = "setPanelStack">
-                                
-                            <Label Content="Set 1" Margin="0 10 0 0"></Label>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label Content ="Reps" Grid.Column="0"></Label>
-                                <Label Content ="Dist" Grid.Column="1"></Label>
-                                <Label Content ="Cool" Grid.Column="2"></Label>
-                                <Label Content ="Units" Grid.Column="3"></Label>
-                            </Grid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBox Name="repsInput" Margin="0,0,5,0" Grid.Column="0"></TextBox>
-                                <TextBox Name="intervalDistanceInput" Margin="0,0,5,0" Grid.Column="1"></TextBox>
-                                <TextBox Name="coolDistanceInput" Margin="0,0,5,0" Grid.Column="2"></TextBox>
-
-                                    <ComboBox Name="intervalDistanceUnits" SelectedValuePath="Content" SelectedItem="Miles" Width="65" HorizontalAlignment="Left" Margin="0,0,5,0" Grid.Column="4">
-                                    <ComboBoxItem Content="Yards"/>
-                                    <ComboBoxItem Content="Meters"/>
-                                    <ComboBoxItem Content="Miles"/>
-                                    <ComboBoxItem Content="KiloMeters"/>
-                                </ComboBox>
-
-                            </Grid>
-
-                            <Label Content="Pace"></Label>
-                                <ComboBox Name="paceInput" SelectedValuePath="Content" SelectionChanged="runTypeComboBox_ValueChanged" SelectedValue ="Easy" Width="130" HorizontalAlignment="Left" Margin="0,0,0,0">
-                                <ComboBoxItem Content="Easy"/>
-                                <ComboBoxItem Content="Long"/>
-                                <ComboBoxItem Content="HMP"/>
-                                <ComboBoxItem Content="MP"/>
-                                <ComboBoxItem Content="FiveK"/>
-                                <ComboBoxItem Content="TenK"/>
-                                <ComboBoxItem Content="Interval"/>
-                                <ComboBoxItem Content="Repition"/>
-                                <ComboBoxItem Content="Hills"/>
-                            </ComboBox>
-
+                            <StackPanel Name="setStackPanel">
+                           <!--Setpanel is done programatically-->
                             </StackPanel>
 
                             <Grid>

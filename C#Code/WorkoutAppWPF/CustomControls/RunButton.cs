@@ -34,6 +34,30 @@ namespace WorkoutAppWPF.ActivityTypes
         private Units coolDistanceUnits { get; set; } = Units.Miles;
         private Pace coolPace { get; set; } = Pace.Easy;
 
+
+        public void clearData()
+        {
+
+
+        numberOfReps =  new List<int>();
+
+        warmupDistance  = 0;
+        warmupDistanceUnits  = Units.Miles;
+        warmupPace = Pace.Easy;
+
+        repDistance  = new List<double>();
+        repDistanceUnits  = new List<Units>();
+        repPace  = new List<Pace>();
+
+        repCoolDistance  = new List<double>();
+        repCoolDistanceUnits  = new List<Units>();
+        repCoolPace  = new List<Pace>();
+
+        coolDistance  = 0;
+        coolDistanceUnits  = Units.Miles;
+        coolPace = Pace.Easy;
+    }
+
         public void setRunType(RunTypes runType)
         {
             this.runType = runType;
