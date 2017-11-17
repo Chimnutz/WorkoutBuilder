@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -15,7 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorkoutAppWPF.ActivityTypes;
 using WorkoutAppWPF.CustomControls;
-using PlotTools = System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Controls.DataVisualization.Charting;
+//using PlotTools = System.Windows.Forms.DataVisualization.Charting;
 
 namespace WorkoutAppWPF
 {
@@ -47,7 +49,7 @@ namespace WorkoutAppWPF
         double[] yDataSpeed;
         double[] yDataLong;
         double[] yDataEasy;
-        PlotTools.Chart mileageChart;
+        //PlotTools.Chart mileageChart;
 
         public MainWindowApp()
         {
@@ -59,6 +61,7 @@ namespace WorkoutAppWPF
             createRunTypeSelectorTable();
 
             createRunDefinitionTable();
+            LoadColumnChartData();
 
             SetPanel setPanel = addSetPanel(1);
             currentSetPanels.Add(setPanel);
@@ -1092,6 +1095,19 @@ namespace WorkoutAppWPF
 
 
         #region Mileage Plot
+
+        private void LoadColumnChartData()
+        {
+            ((ColumnSeries)mcChart.Series[0]).ItemsSource =
+                new KeyValuePair<string, int>[]{
+        new KeyValuePair<string,int>("Project Manager", 12),
+        new KeyValuePair<string,int>("CEO", 25),
+        new KeyValuePair<string,int>("Software Engg.", 5),
+        new KeyValuePair<string,int>("Team Leader", 6),
+        new KeyValuePair<string,int>("Project Leader", 10),
+        new KeyValuePair<string,int>("Developer", 4) };
+        }
+
         public void plotMileageData()
         {
 
@@ -1106,7 +1122,7 @@ namespace WorkoutAppWPF
             yDataLong = new double[numCycles];
             yDataEasy = new double[numCycles];
 
-            mileageChart.Series.Clear();
+            //mileageChart.Series.Clear();
 
             for (int ii = 0; ii < numCycles; ii++)
             {
@@ -1146,57 +1162,88 @@ namespace WorkoutAppWPF
                 yDataEasy[ii] = easyMiles;
             }
 
+            Chart columnChart = new Chart();
+            //columnChart.ChartAreaStyle.;
+
+            BarSeries data = new BarSeries();
+
+
+            List<KeyValuePair<string, int>> valueList = new List<KeyValuePair<string, int>>();
+            valueList.Add(new KeyValuePair<string, int>("Developer", 60));
+            valueList.Add(new KeyValuePair<string, int>("Misc", 20));
+            valueList.Add(new KeyValuePair<string, int>("Tester", 50));
+            valueList.Add(new KeyValuePair<string, int>("QA", 30));
+            valueList.Add(new KeyValuePair<string, int>("Project Manager", 40));
+    
+
+
+            //Setting data for column chart
+            columnChart.DataContext = valueList;
+
+            //// Setting data for pie chart
+            //pieChart.DataContext = valueList;
+
+            ////Setting data for area chart
+            //areaChart.DataContext = valueList;
+
+            ////Setting data for bar chart
+            //barChart.DataContext = valueList;
+
+            ////Setting data for line chart
+            //lineChart.DataContext = valueList;
+
+
             //Vertical bar chart
             //create another area and add it to the chart
-            PlotTools.ChartArea area = new PlotTools.ChartArea("Mileage Data");
-            area.AxisX.Title = "Cycle #";
-            area.AxisY.Title = "Mileage";
-            mileageChart.ChartAreas.Add(area);
+            //ChartArea area = new PlotTools.ChartArea("Mileage Data");
+            //area.AxisX.Title = "Cycle #";
+            //area.AxisY.Title = "Mileage";
+            //mileageChart.ChartAreas.Add(area);
 
-            //Create the series using just the y data
-            PlotTools.Series targetBarSeries = new PlotTools.Series();
-            targetBarSeries.Points.DataBindY(yDataTarget);
-            //targetBarSeries.Color = Brushes.Blue;
-            targetBarSeries.MarkerSize = 10;
-            targetBarSeries.ChartType = PlotTools.SeriesChartType.Point;
-            targetBarSeries.ChartArea = "Mileage Data";
+            ////Create the series using just the y data
+            //PlotTools.Series targetBarSeries = new PlotTools.Series();
+            //targetBarSeries.Points.DataBindY(yDataTarget);
+            ////targetBarSeries.Color = Brushes.Blue;
+            //targetBarSeries.MarkerSize = 10;
+            //targetBarSeries.ChartType = PlotTools.SeriesChartType.Point;
+            //targetBarSeries.ChartArea = "Mileage Data";
 
-            PlotTools.Series tempoBarSeries = new PlotTools.Series();
-            tempoBarSeries.Points.DataBindY(yDataTempo);
-            //tempoBarSeries.Color = Brushes.Orange;
-            tempoBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            tempoBarSeries.ChartArea = "Mileage Data";
+            //PlotTools.Series tempoBarSeries = new PlotTools.Series();
+            //tempoBarSeries.Points.DataBindY(yDataTempo);
+            ////tempoBarSeries.Color = Brushes.Orange;
+            //tempoBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            //tempoBarSeries.ChartArea = "Mileage Data";
 
-            PlotTools.Series speedBarSeries = new PlotTools.Series();
-            speedBarSeries.Points.DataBindY(yDataSpeed);
-            //speedBarSeries.Color = Brushes.Orange;
-            speedBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            speedBarSeries.ChartArea = "Mileage Data";
+            //PlotTools.Series speedBarSeries = new PlotTools.Series();
+            //speedBarSeries.Points.DataBindY(yDataSpeed);
+            ////speedBarSeries.Color = Brushes.Orange;
+            //speedBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            //speedBarSeries.ChartArea = "Mileage Data";
 
-            PlotTools.Series longBarSeries = new PlotTools.Series();
-            longBarSeries.Points.DataBindY(yDataLong);
-            //longBarSeries.Color = Brushes.DarkGreen;
-            longBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            longBarSeries.ChartArea = "Mileage Data";
+            //PlotTools.Series longBarSeries = new PlotTools.Series();
+            //longBarSeries.Points.DataBindY(yDataLong);
+            ////longBarSeries.Color = Brushes.DarkGreen;
+            //longBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            //longBarSeries.ChartArea = "Mileage Data";
 
-            PlotTools.Series easyBarSeries = new PlotTools.Series();
-            easyBarSeries.Points.DataBindY(yDataEasy);
-            //easyBarSeries.Color = Brushes.LightGreen;
-            easyBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            easyBarSeries.ChartArea = "Mileage Data";
-
-
-            //Add the series to the chart
-
-            mileageChart.Series.Add(tempoBarSeries);
-            mileageChart.Series.Add(speedBarSeries);
-            mileageChart.Series.Add(longBarSeries);
-            mileageChart.Series.Add(easyBarSeries);
+            //PlotTools.Series easyBarSeries = new PlotTools.Series();
+            //easyBarSeries.Points.DataBindY(yDataEasy);
+            ////easyBarSeries.Color = Brushes.LightGreen;
+            //easyBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            //easyBarSeries.ChartArea = "Mileage Data";
 
 
-            mileageChart.Series.Add(targetBarSeries);
+            ////Add the series to the chart
 
-            //chartStackPanel.Children.Add(mileageChart);
+            //mileageChart.Series.Add(tempoBarSeries);
+            //mileageChart.Series.Add(speedBarSeries);
+            //mileageChart.Series.Add(longBarSeries);
+            //mileageChart.Series.Add(easyBarSeries);
+
+
+            //mileageChart.Series.Add(targetBarSeries);
+
+            chartStackPanel.Children.Add(columnChart);
         }
 
         //public void refreshMileageData()

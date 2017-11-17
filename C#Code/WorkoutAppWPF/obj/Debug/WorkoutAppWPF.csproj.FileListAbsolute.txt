@@ -12,3 +12,9 @@ C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\Wor
 C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.csproj.GenerateResource.Cache
 C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.exe
 C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\obj\Debug\WorkoutAppWPF.pdb
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\WPFToolkit.dll
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.pdb
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.pdb
+C:\Misc\WorkoutSchedule_GetHub\WorkoutBuilder\C#Code\WorkoutAppWPF\bin\Debug\WPFToolkit.pdb
