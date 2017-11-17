@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorkoutAppWPF.ActivityTypes;
 using WorkoutAppWPF.CustomControls;
+using PlotTools = System.Windows.Forms.DataVisualization.Charting;
 
 namespace WorkoutAppWPF
 {
@@ -27,16 +28,26 @@ namespace WorkoutAppWPF
         Grid dayNumerGrid;
         Grid runTypeGrid;
         Grid weightTrainGrid;
-        Grid crossTrainGrid;
+        Grid crossTrainGrid1;
+        Grid crossTrainGrid2;
         Grid runDefGrid;
 
         List<TextBox> mileageList;
-        List<ComboBox> crossTrainInputList;
+        List<ComboBox> crossTrainInputList1;
+        List<ComboBox> crossTrainInputList2;
         List<ComboBox> runInputList;
         List<ComboBox> weightTrainInputList;
         List<List<RunButton>> runDefInputList;
         List<SetPanel> currentSetPanels = new List<SetPanel>();
         RunButton currentRunButton;
+
+        double[] xData;
+        double[] yDataTarget;
+        double[] yDataTempo;
+        double[] yDataSpeed;
+        double[] yDataLong;
+        double[] yDataEasy;
+        PlotTools.Chart mileageChart;
 
         public MainWindowApp()
         {
@@ -64,18 +75,21 @@ namespace WorkoutAppWPF
             numCyclesInput.Text = 16.ToString();
             numDaysInput.Text = 9.ToString();
             numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) / 7 * 10) / 10).ToString();
-            minMileageInput.Text = 10.ToString();
-            maxMileageInput.Text = 40.ToString();
+            minMileageInput.Text = 15.ToString();
+            maxMileageInput.Text = 50.ToString();
             cycleMileageIncrease.Text = 4.ToString();
             numCyclesReset.Text = 4.ToString();
-            cycleMileageDeltaInput.Text = 6.ToString();
+            cycleMileageDeltaInput.Text = 12.ToString();
+            maxLongRunMiles.Text = 14.ToString();
+            maxTempoRunMiles.Text = 10.ToString();
+            maxSpeedRunMiles.Text = 10.ToString();
 
             numCyclesInput.TextChanged += numCycles_Changed;
             numDaysInput.TextChanged += numCycles_Changed;
 
-            speedSlider.Value = 8;
-            longSlider.Value = 30;
-            tempoSlider.Value = 12;
+            speedSlider.Value = 7;
+            longSlider.Value = 28;
+            tempoSlider.Value = 14;
 
         }
 
@@ -85,21 +99,28 @@ namespace WorkoutAppWPF
             createMileageTable((int)double.Parse(numCyclesInput.Text));
 
 
-            WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
-            WorkoutDefStackPanel.Children.Remove(runTypeGrid);
-            WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
-            WorkoutDefStackPanel.Children.Remove(crossTrainGrid);
-            createRunTypeSelectorTable();
+            //WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
+            //WorkoutDefStackPanel.Children.Remove(runTypeGrid);
+            //WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
+            //WorkoutDefStackPanel.Children.Remove(crossTrainGrid);
+            //createRunTypeSelectorTable();
 
-            runDefStackPanel.Children.Remove(runDefGrid);
-            createRunDefinitionTable();
+            //runDefStackPanel.Children.Remove(runDefGrid);
+            //createRunDefinitionTable();
 
         }
 
         private void recalcRunTable_click(object sender, EventArgs e)
         {
-            mileageDefStackPanel.Children.Remove(mileageGrid);
-            createMileageTable((int)double.Parse(numCyclesInput.Text));
+            WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
+            WorkoutDefStackPanel.Children.Remove(runTypeGrid);
+            WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
+            WorkoutDefStackPanel.Children.Remove(crossTrainGrid1);
+            WorkoutDefStackPanel.Children.Remove(crossTrainGrid2);
+            createRunTypeSelectorTable();
+
+            runDefStackPanel.Children.Remove(runDefGrid);
+            createRunDefinitionTable();
 
         }
 
@@ -206,7 +227,8 @@ namespace WorkoutAppWPF
                         {
                             doubleCycleMileage = doubleCycleMileage - double.Parse(cycleMileageDeltaInput.Text);
                             periodCnt = 1;
-                        } else
+                        }
+                        else
                         {
                             doubleCycleMileage = lastMileageTgt + double.Parse(cycleMileageDeltaInput.Text) / (numCyclesRest - 1);
                             if (doubleCycleMileage >= maxMileage)
@@ -244,19 +266,21 @@ namespace WorkoutAppWPF
             mileageDefStackPanel.Children.Add(mileageGrid);
 
         }
-   
+
 
         private void createRunTypeSelectorTable()
         {
             int numDaysInCycle = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
-            crossTrainInputList = new List<ComboBox>();
+            crossTrainInputList1 = new List<ComboBox>();
+            crossTrainInputList2 = new List<ComboBox>();
             runInputList = new List<ComboBox>();
             weightTrainInputList = new List<ComboBox>();
 
             dayNumerGrid = new Grid();
             runTypeGrid = new Grid();
             weightTrainGrid = new Grid();
-            crossTrainGrid = new Grid();
+            crossTrainGrid1 = new Grid();
+            crossTrainGrid2 = new Grid();
 
             for (int ii = 0; ii < numDaysInCycle + 1; ii++)
             {
@@ -273,10 +297,14 @@ namespace WorkoutAppWPF
                 ColumnDefinition gridCol4 = new ColumnDefinition();
                 gridCol4.Width = new GridLength(1, GridUnitType.Star);
 
+                ColumnDefinition gridCol5 = new ColumnDefinition();
+                gridCol5.Width = new GridLength(1, GridUnitType.Star);
+
                 dayNumerGrid.ColumnDefinitions.Add(gridCol1);
                 runTypeGrid.ColumnDefinitions.Add(gridCol2);
                 weightTrainGrid.ColumnDefinitions.Add(gridCol3);
-                crossTrainGrid.ColumnDefinitions.Add(gridCol4);
+                crossTrainGrid1.ColumnDefinitions.Add(gridCol4);
+                crossTrainGrid2.ColumnDefinitions.Add(gridCol5);
 
             }
 
@@ -305,12 +333,20 @@ namespace WorkoutAppWPF
             weightTrainGrid.Children.Add(workoutText);
 
             //Add cross train label
-            Label crossTrainText = new Label();
-            crossTrainText.Content = "CT";
-            crossTrainText.HorizontalAlignment = HorizontalAlignment.Center;
-            Grid.SetRow(crossTrainText, 0);
-            Grid.SetColumn(crossTrainText, 0);
-            crossTrainGrid.Children.Add(crossTrainText);
+            Label crossTrainText1 = new Label();
+            crossTrainText1.Content = "CT1";
+            crossTrainText1.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(crossTrainText1, 0);
+            Grid.SetColumn(crossTrainText1, 0);
+            crossTrainGrid1.Children.Add(crossTrainText1);
+
+            //Add cross train label
+            Label crossTrainText2 = new Label();
+            crossTrainText2.Content = "CT2";
+            crossTrainText2.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(crossTrainText2, 0);
+            Grid.SetColumn(crossTrainText2, 0);
+            crossTrainGrid2.Children.Add(crossTrainText2);
 
 
             for (int ii = 0; ii < numDaysInCycle; ii++)
@@ -321,7 +357,7 @@ namespace WorkoutAppWPF
                 dayNumberText.Content = (ii + 1).ToString();
                 dayNumberText.HorizontalAlignment = HorizontalAlignment.Center;
                 Grid.SetRow(dayNumberText, 0);
-                Grid.SetColumn(dayNumberText, ii+1);
+                Grid.SetColumn(dayNumberText, ii + 1);
                 dayNumerGrid.Children.Add(dayNumberText);
 
                 //Add Cross Train Inputs
@@ -340,16 +376,28 @@ namespace WorkoutAppWPF
                 weightTrainInputList.Add(weightTrainInput);
 
                 //Add Cross Train Inputs
-                ComboBox crossTrainInput = new ComboBox();
-                crossTrainInput.Items.Add("Swim");
-                crossTrainInput.Items.Add("Bike");
-                crossTrainInput.Items.Add("Rest");
-                crossTrainInput.SelectionChanged += crossTrainCmbBox_ValueChanged;
-                crossTrainInput.SelectedItem = "Rest";
-                Grid.SetRow(crossTrainInput, 0);
-                Grid.SetColumn(crossTrainInput, ii + 1);
-                crossTrainGrid.Children.Add(crossTrainInput);
-                crossTrainInputList.Add(crossTrainInput);
+                ComboBox crossTrainInput1 = new ComboBox();
+                crossTrainInput1.Items.Add("Swim");
+                crossTrainInput1.Items.Add("Bike");
+                crossTrainInput1.Items.Add("Rest");
+                crossTrainInput1.SelectionChanged += crossTrainCmbBox_ValueChanged;
+                crossTrainInput1.SelectedItem = "Rest";
+                Grid.SetRow(crossTrainInput1, 0);
+                Grid.SetColumn(crossTrainInput1, ii + 1);
+                crossTrainGrid1.Children.Add(crossTrainInput1);
+                crossTrainInputList1.Add(crossTrainInput1);
+
+                //Add Cross Train Inputs
+                ComboBox crossTrainInput2 = new ComboBox();
+                crossTrainInput2.Items.Add("Swim");
+                crossTrainInput2.Items.Add("Bike");
+                crossTrainInput2.Items.Add("Rest");
+                crossTrainInput2.SelectionChanged += crossTrainCmbBox_ValueChanged;
+                crossTrainInput2.SelectedItem = "Rest";
+                Grid.SetRow(crossTrainInput2, 0);
+                Grid.SetColumn(crossTrainInput2, ii + 1);
+                crossTrainGrid2.Children.Add(crossTrainInput2);
+                crossTrainInputList2.Add(crossTrainInput2);
 
                 //Add Run Train Inputs
                 ComboBox runInput = new ComboBox();
@@ -370,7 +418,8 @@ namespace WorkoutAppWPF
             WorkoutDefStackPanel.Children.Add(dayNumerGrid);
             WorkoutDefStackPanel.Children.Add(runTypeGrid);
             WorkoutDefStackPanel.Children.Add(weightTrainGrid);
-            WorkoutDefStackPanel.Children.Add(crossTrainGrid);
+            WorkoutDefStackPanel.Children.Add(crossTrainGrid1);
+            WorkoutDefStackPanel.Children.Add(crossTrainGrid2);
 
             setInputSelection(numDaysInCycle);
 
@@ -385,7 +434,7 @@ namespace WorkoutAppWPF
             runDefGrid = new Grid();
 
             // Create Columns
-            for (int ii = 0; ii < numDaysInCycle+1; ii++)
+            for (int ii = 0; ii < numDaysInCycle + 1; ii++)
             {
                 ColumnDefinition gridCol1 = new ColumnDefinition();
                 gridCol1.Width = new GridLength(1, GridUnitType.Star);
@@ -402,7 +451,8 @@ namespace WorkoutAppWPF
 
             double lastDistance = 0;
 
-            for (int jj = 0; jj < numCycles; jj++) {
+            for (int jj = 0; jj < numCycles; jj++)
+            {
 
                 //Add Cycle Number Text
                 Label cycleNumberText = new Label();
@@ -413,7 +463,7 @@ namespace WorkoutAppWPF
                 runDefGrid.Children.Add(cycleNumberText);
 
                 //create a new list for the row
-                List<RunButton> cycleRunDefInputList =  new List<RunButton>();
+                List<RunButton> cycleRunDefInputList = new List<RunButton>();
                 runDefInputList.Add(cycleRunDefInputList);
 
                 int numEasyRuns = 0;
@@ -424,7 +474,7 @@ namespace WorkoutAppWPF
 
                 List<RunButton> cycleRunDefList = new List<RunButton>();
 
-                
+
 
                 for (int ii = 0; ii < numDaysInCycle; ii++)
                 {
@@ -434,7 +484,7 @@ namespace WorkoutAppWPF
                     //get run type
                     String runType = runInputList[ii].SelectedItem.ToString();
 
-                    if(runType == "Easy")
+                    if (runType == "Easy")
                     {
                         numEasyRuns++;
                         easyIndex.Add(ii); //add the index of the easy day
@@ -443,7 +493,7 @@ namespace WorkoutAppWPF
 
                     runButton.Click += runButton_click;
                     Grid.SetRow(runButton, jj);
-                    Grid.SetColumn(runButton, ii+1);
+                    Grid.SetColumn(runButton, ii + 1);
                     runDefGrid.Children.Add(runButton);
                     cycleRunDefList.Add(runButton);
 
@@ -459,9 +509,26 @@ namespace WorkoutAppWPF
 
                 //figure out easy miles
                 double desiredCycleMiles = double.Parse(mileageList[jj].Text);
-                double remainingMiles = Math.Max((desiredCycleMiles - totalMileage),0);
-                double dailyMiles = Math.Floor(remainingMiles / numEasyRuns);
-                int remainder = (int)Math.Round(remainingMiles % numEasyRuns);
+                double remainingMiles = Math.Max((desiredCycleMiles - totalMileage), 0);
+
+                double dailyMiles = 0;
+                int remainder = 0;
+
+                while (dailyMiles < 3)
+                {
+                    dailyMiles = Math.Floor(remainingMiles / numEasyRuns);
+                    remainder = (int)Math.Round(remainingMiles % numEasyRuns);
+                    if (dailyMiles < 3)
+                    {
+                        numEasyRuns--;
+                    }
+
+                    if (numEasyRuns < 1)
+                    {
+                        numEasyRuns = 1;
+                        break;
+                    }
+                }
 
                 //sort easy days based on how hard the previous day was
                 var sorted = previousMileage
@@ -474,12 +541,11 @@ namespace WorkoutAppWPF
 
                 //divide up easy miles
                 double[] easyMiles = new double[idx.Count];
-                int lastIndex = 0;
 
                 if (remainder == 0)
                 {
                     //use base miles for harder days
-                    for (int ii = 0; ii < idx.Count; ii++)
+                    for (int ii = 0; ii < numEasyRuns; ii++)
                     {
                         easyMiles[ii] = dailyMiles;
                     }
@@ -487,18 +553,25 @@ namespace WorkoutAppWPF
                 else
                 {
 
-                    //add extra miles to easist days
-                    for (int ii = 0; ii < remainder; ii++)
-                    {
-                        easyMiles[ii] = dailyMiles + 1;
-                        lastIndex = ii;
-
-                    }
-
-                    //use base miles for harder days
-                    for (int ii = lastIndex + 1; ii < idx.Count; ii++)
+                    for (int ii = 0; ii < numEasyRuns; ii++)
                     {
                         easyMiles[ii] = dailyMiles;
+                    }
+
+                    while (remainder > 0)
+                    {
+                        //add extra miles to easist days
+                        for (int ii = 0; ii < numEasyRuns; ii++)
+                        {
+                            easyMiles[ii] = easyMiles[ii] + 1;
+                            remainder--;
+
+                            if (remainder == 0)
+                            {
+                                break;
+                            }
+
+                        }
                     }
 
                 }
@@ -506,7 +579,17 @@ namespace WorkoutAppWPF
                 for (int ii = 0; ii < idx.Count; ii++)
                 {
                     int thisControlIndex = easyIndex[idx[ii]];
-                    cycleRunDefInputList[thisControlIndex].addWorkout(1, easyMiles[ii], Units.Miles, Pace.Easy, 0, Units.Miles, Pace.Easy);
+                    if (easyMiles[ii] == 0)
+                    {
+                        cycleRunDefInputList[thisControlIndex].setRunType(RunTypes.Rest);
+                        cycleRunDefInputList[thisControlIndex].addWorkout(0, 0, Units.Miles, Pace.Easy, 0, Units.Miles, Pace.Easy);
+
+                    }
+                    else
+                    {
+                        cycleRunDefInputList[thisControlIndex].addWorkout(1, easyMiles[ii], Units.Miles, Pace.Easy, 0, Units.Miles, Pace.Easy);
+
+                    }
                 }
 
 
@@ -533,20 +616,20 @@ namespace WorkoutAppWPF
                     break;
                 case "Long":
                     runButton.setRunType(RunTypes.Long);
-                    runButton.addWorkout(1,Math.Round(cycleMileage*longSlider.Value/100.0*2)/2, Units.Miles, Pace.Long, 0, Units.Miles, Pace.Easy);
+                    runButton.addWorkout(1, Math.Min(Math.Round(cycleMileage * longSlider.Value / 100.0 * 2) / 2, (double.Parse(maxLongRunMiles.Text))), Units.Miles, Pace.Long, 0, Units.Miles, Pace.Easy);
 
                     break;
                 case "Tempo":
                     runButton.setRunType(RunTypes.Tempo);
                     runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
-                    runButton.addWorkout(1, Math.Round(cycleMileage * tempoSlider.Value / 100.0*2)/2, Units.Miles, Pace.HMP, 0, Units.Miles, Pace.Easy);
+                    runButton.addWorkout(1, Math.Min(Math.Round(cycleMileage * tempoSlider.Value / 100.0 * 2) / 2, (double.Parse(maxTempoRunMiles.Text) - 3)), Units.Miles, Pace.HMP, 0, Units.Miles, Pace.Easy);
                     runButton.addCooldown(1.5, Units.Miles, Pace.Easy);
                     break;
                 case "Interval":
 
-                    double intervalMileage = Math.Round(cycleMileage * speedSlider.Value / 100.0*2)/2;
+                    double intervalMileage = Math.Min(Math.Round(cycleMileage * speedSlider.Value / 100.0 * 2) / 2, (double.Parse(maxTempoRunMiles.Text) - 3) / 2);
                     double repDistance = 400.0;
-                    int reps = (int)Math.Ceiling(intervalMileage / convertToMiles(repDistance, Units.Meters));
+                    int reps = (int)Math.Round(intervalMileage / convertToMiles(repDistance, Units.Meters));
 
                     runButton.setRunType(RunTypes.Interval);
                     runButton.addWarmup(1.5, Units.Miles, Pace.Easy);
@@ -587,13 +670,21 @@ namespace WorkoutAppWPF
                     runInputList[5].SelectedItem = "Long";
                     runInputList[6].SelectedItem = "Easy";
 
-                    crossTrainInputList[0].SelectedItem = "Rest";
-                    crossTrainInputList[1].SelectedItem = "Rest";
-                    crossTrainInputList[2].SelectedItem = "Rest";
-                    crossTrainInputList[3].SelectedItem = "Rest";
-                    crossTrainInputList[4].SelectedItem = "Rest";
-                    crossTrainInputList[5].SelectedItem = "Rest";
-                    crossTrainInputList[6].SelectedItem = "Rest";
+                    crossTrainInputList1[0].SelectedItem = "Rest";
+                    crossTrainInputList1[1].SelectedItem = "Rest";
+                    crossTrainInputList1[2].SelectedItem = "Rest";
+                    crossTrainInputList1[3].SelectedItem = "Rest";
+                    crossTrainInputList1[4].SelectedItem = "Rest";
+                    crossTrainInputList1[5].SelectedItem = "Rest";
+                    crossTrainInputList1[6].SelectedItem = "Rest";
+
+                    crossTrainInputList2[0].SelectedItem = "Rest";
+                    crossTrainInputList2[1].SelectedItem = "Rest";
+                    crossTrainInputList2[2].SelectedItem = "Rest";
+                    crossTrainInputList2[3].SelectedItem = "Rest";
+                    crossTrainInputList2[4].SelectedItem = "Rest";
+                    crossTrainInputList2[5].SelectedItem = "Rest";
+                    crossTrainInputList2[6].SelectedItem = "Rest";
 
                     weightTrainInputList[0].SelectedItem = "W - Chest";
                     weightTrainInputList[1].SelectedItem = "W - Back";
@@ -616,14 +707,23 @@ namespace WorkoutAppWPF
                     runInputList[6].SelectedItem = "Long";
                     runInputList[7].SelectedItem = "Easy";
 
-                    crossTrainInputList[0].SelectedItem = "Rest";
-                    crossTrainInputList[1].SelectedItem = "Rest";
-                    crossTrainInputList[2].SelectedItem = "Rest";
-                    crossTrainInputList[3].SelectedItem = "Rest";
-                    crossTrainInputList[4].SelectedItem = "Rest";
-                    crossTrainInputList[5].SelectedItem = "Rest";
-                    crossTrainInputList[6].SelectedItem = "Rest";
-                    crossTrainInputList[7].SelectedItem = "Rest";
+                    crossTrainInputList1[0].SelectedItem = "Rest";
+                    crossTrainInputList1[1].SelectedItem = "Rest";
+                    crossTrainInputList1[2].SelectedItem = "Rest";
+                    crossTrainInputList1[3].SelectedItem = "Rest";
+                    crossTrainInputList1[4].SelectedItem = "Rest";
+                    crossTrainInputList1[5].SelectedItem = "Rest";
+                    crossTrainInputList1[6].SelectedItem = "Rest";
+                    crossTrainInputList1[7].SelectedItem = "Rest";
+
+                    crossTrainInputList2[0].SelectedItem = "Rest";
+                    crossTrainInputList2[1].SelectedItem = "Rest";
+                    crossTrainInputList2[2].SelectedItem = "Rest";
+                    crossTrainInputList2[3].SelectedItem = "Rest";
+                    crossTrainInputList2[4].SelectedItem = "Rest";
+                    crossTrainInputList2[5].SelectedItem = "Rest";
+                    crossTrainInputList2[6].SelectedItem = "Rest";
+                    crossTrainInputList2[7].SelectedItem = "Rest";
 
                     weightTrainInputList[0].SelectedItem = "W - Chest";
                     weightTrainInputList[1].SelectedItem = "W - Back";
@@ -647,15 +747,25 @@ namespace WorkoutAppWPF
                     runInputList[7].SelectedItem = "Interval";
                     runInputList[8].SelectedItem = "Rest";
 
-                    crossTrainInputList[0].SelectedItem = "Rest";
-                    crossTrainInputList[1].SelectedItem = "Rest";
-                    crossTrainInputList[2].SelectedItem = "Swim";
-                    crossTrainInputList[3].SelectedItem = "Bike";
-                    crossTrainInputList[4].SelectedItem = "Rest";
-                    crossTrainInputList[5].SelectedItem = "Bike";
-                    crossTrainInputList[6].SelectedItem = "Swim";
-                    crossTrainInputList[7].SelectedItem = "Rest";
-                    crossTrainInputList[7].SelectedItem = "Rest";
+                    crossTrainInputList1[0].SelectedItem = "Rest";
+                    crossTrainInputList1[1].SelectedItem = "Rest";
+                    crossTrainInputList1[2].SelectedItem = "Swim";
+                    crossTrainInputList1[3].SelectedItem = "Bike";
+                    crossTrainInputList1[4].SelectedItem = "Rest";
+                    crossTrainInputList1[5].SelectedItem = "Bike";
+                    crossTrainInputList1[6].SelectedItem = "Swim";
+                    crossTrainInputList1[7].SelectedItem = "Rest";
+                    crossTrainInputList1[7].SelectedItem = "Rest";
+
+                    crossTrainInputList2[0].SelectedItem = "Rest";
+                    crossTrainInputList2[1].SelectedItem = "Rest";
+                    crossTrainInputList2[2].SelectedItem = "Rest";
+                    crossTrainInputList2[3].SelectedItem = "Rest";
+                    crossTrainInputList2[4].SelectedItem = "Rest";
+                    crossTrainInputList2[5].SelectedItem = "Rest";
+                    crossTrainInputList2[6].SelectedItem = "Rest";
+                    crossTrainInputList2[7].SelectedItem = "Rest";
+                    crossTrainInputList2[8].SelectedItem = "Rest";
 
                     weightTrainInputList[0].SelectedItem = "Rest";
                     weightTrainInputList[1].SelectedItem = "Abs";
@@ -761,7 +871,7 @@ namespace WorkoutAppWPF
         private void runTypeComboBox_ValueChanged(object sender, EventArgs e)
         {
             ComboBox runCmbBox = (ComboBox)sender;
-            
+
             string selectedString = ((ComboBoxItem)runCmbBox.SelectedItem).Content.ToString();
 
             switch (selectedString)
@@ -818,7 +928,7 @@ namespace WorkoutAppWPF
 
             //clear out list
             currentSetPanels = new List<SetPanel>();
-            
+
             RunButton runButton = (RunButton)sender;
 
             String stringRunType = runButton.getRunType().ToString();
@@ -857,7 +967,7 @@ namespace WorkoutAppWPF
             {
                 for (int ii = 0; ii < numSets; ii++)
                 {
-                    if(currentSetPanels.Count< (ii + 1))
+                    if (currentSetPanels.Count < (ii + 1))
                     {
                         SetPanel newSetPanel = addSetPanel(currentSetPanels.Count + 1);
                         currentSetPanels.Add(newSetPanel);
@@ -880,7 +990,7 @@ namespace WorkoutAppWPF
         private void addSet_click(object sender, EventArgs e)
         {
 
-            SetPanel newSetPanel = addSetPanel(currentSetPanels.Count+1);
+            SetPanel newSetPanel = addSetPanel(currentSetPanels.Count + 1);
             currentSetPanels.Add(newSetPanel);
 
         }
@@ -932,7 +1042,7 @@ namespace WorkoutAppWPF
             currentRunButton.addWarmup(warmupDistance, warmupUnits, Pace.Easy);
 
             //workout
-            for(int ii=0; ii< currentSetPanels.Count; ii++)
+            for (int ii = 0; ii < currentSetPanels.Count; ii++)
             {
                 int numReps = (int)Math.Round(double.Parse(currentSetPanels[ii].repsTextInput.Text));
                 double repDistance = double.Parse(currentSetPanels[ii].distTextInput.Text);
@@ -979,8 +1089,196 @@ namespace WorkoutAppWPF
             convertedMiles = unitFactor * distance;
             return convertedMiles;
         }
+
+
+        #region Mileage Plot
+        public void plotMileageData()
+        {
+
+            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
+            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text)); 
+
+
+            xData = new double[numCycles];
+            yDataTarget = new double[numCycles];
+            yDataTempo = new double[numCycles];
+            yDataSpeed = new double[numCycles];
+            yDataLong = new double[numCycles];
+            yDataEasy = new double[numCycles];
+
+            mileageChart.Series.Clear();
+
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                double easyMiles = 0;
+                double tempoMiles = 0;
+                double longMiles = 0;
+                double speedMiles = 0;
+                for(int jj = 0; jj < numDays; jj++)
+                {
+                    RunButton thisRunButton = runDefInputList[ii][jj];
+                    switch (thisRunButton.getRunType())
+                    {
+                        case (RunTypes.Easy):
+                            easyMiles = thisRunButton.getTotalMileage();
+                            break;
+                        case (RunTypes.Long):
+                            longMiles = thisRunButton.getTotalMileage();
+                            break;
+                        case (RunTypes.Tempo):
+                            easyMiles = thisRunButton.getEasyMileage();
+                            tempoMiles = thisRunButton.getWorkoutMileage();
+                            break;
+                        case (RunTypes.Interval):
+                            easyMiles = thisRunButton.getEasyMileage();
+                            speedMiles = thisRunButton.getWorkoutMileage();
+                            break;
+                    }
+                   
+                }
+
+
+                xData[ii] = ii + 1;
+                yDataTarget[ii] = double.Parse(mileageList[ii].Text);
+                yDataTempo[ii] = tempoMiles;
+                yDataSpeed[ii] = speedMiles;
+                yDataLong[ii] = longMiles;
+                yDataEasy[ii] = easyMiles;
+            }
+
+            //Vertical bar chart
+            //create another area and add it to the chart
+            PlotTools.ChartArea area = new PlotTools.ChartArea("Mileage Data");
+            area.AxisX.Title = "Cycle #";
+            area.AxisY.Title = "Mileage";
+            mileageChart.ChartAreas.Add(area);
+
+            //Create the series using just the y data
+            PlotTools.Series targetBarSeries = new PlotTools.Series();
+            targetBarSeries.Points.DataBindY(yDataTarget);
+            //targetBarSeries.Color = Brushes.Blue;
+            targetBarSeries.MarkerSize = 10;
+            targetBarSeries.ChartType = PlotTools.SeriesChartType.Point;
+            targetBarSeries.ChartArea = "Mileage Data";
+
+            PlotTools.Series tempoBarSeries = new PlotTools.Series();
+            tempoBarSeries.Points.DataBindY(yDataTempo);
+            //tempoBarSeries.Color = Brushes.Orange;
+            tempoBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            tempoBarSeries.ChartArea = "Mileage Data";
+
+            PlotTools.Series speedBarSeries = new PlotTools.Series();
+            speedBarSeries.Points.DataBindY(yDataSpeed);
+            //speedBarSeries.Color = Brushes.Orange;
+            speedBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            speedBarSeries.ChartArea = "Mileage Data";
+
+            PlotTools.Series longBarSeries = new PlotTools.Series();
+            longBarSeries.Points.DataBindY(yDataLong);
+            //longBarSeries.Color = Brushes.DarkGreen;
+            longBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            longBarSeries.ChartArea = "Mileage Data";
+
+            PlotTools.Series easyBarSeries = new PlotTools.Series();
+            easyBarSeries.Points.DataBindY(yDataEasy);
+            //easyBarSeries.Color = Brushes.LightGreen;
+            easyBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
+            easyBarSeries.ChartArea = "Mileage Data";
+
+
+            //Add the series to the chart
+
+            mileageChart.Series.Add(tempoBarSeries);
+            mileageChart.Series.Add(speedBarSeries);
+            mileageChart.Series.Add(longBarSeries);
+            mileageChart.Series.Add(easyBarSeries);
+
+
+            mileageChart.Series.Add(targetBarSeries);
+
+            //chartStackPanel.Children.Add(mileageChart);
+        }
+
+        //public void refreshMileageData()
+        //{
+
+        //    int numCycles = (int)Math.Ceiling(numCyclesNumInput.Value);
+        //    xData = new double[numCycles];
+        //    yDataTarget = new double[numCycles];
+        //    yDataTempo = new double[numCycles];
+        //    yDataSpeed = new double[numCycles];
+        //    yDataLong = new double[numCycles];
+        //    yDataEasy = new double[numCycles];
+
+        //    mileageChart.Series.Clear();
+
+        //    for (int ii = 0; ii < numCycles; ii++)
+        //    {
+        //        xData[ii] = ii + 1;
+        //        yDataTarget[ii] = (double)((NumericUpDown)cycleMileageTable.GetControlFromPosition(1, ii)).Value;
+        //        yDataTempo[ii] = (double)Convert.ToDouble(((Label)tempoWorkoutTable.GetControlFromPosition(7, ii)).Text);
+        //        yDataSpeed[ii] = (double)Convert.ToDouble(((Label)speedWorkoutTable.GetControlFromPosition(11, ii)).Text);
+        //        yDataLong[ii] = (double)((NumericUpDown)longRunCycleTable.GetControlFromPosition(1, ii)).Value;
+        //        yDataEasy[ii] = 10;
+        //    }
+
+        //    //Vertical bar chart
+        //    //create another area and add it to the chart
+        //    ChartArea area = new ChartArea("Mileage Data");
+        //    area.AxisX.Title = "Cycle #";
+        //    area.AxisY.Title = "Mileage";
+        //    mileageChart.ChartAreas.Clear();
+        //    mileageChart.ChartAreas.Add(area);
+
+        //    //Create the series using just the y data
+        //    Series targetBarSeries = new Series();
+        //    targetBarSeries.Points.DataBindY(yDataTarget);
+        //    targetBarSeries.Color = Color.Blue;
+        //    targetBarSeries.MarkerSize = 10;
+        //    targetBarSeries.ChartType = SeriesChartType.Point;
+        //    targetBarSeries.ChartArea = "Mileage Data";
+
+        //    Series tempoBarSeries = new Series();
+        //    tempoBarSeries.Points.DataBindY(yDataTempo);
+        //    tempoBarSeries.Color = Color.Orange;
+        //    tempoBarSeries.ChartType = SeriesChartType.StackedColumn;
+        //    tempoBarSeries.ChartArea = "Mileage Data";
+
+        //    Series speedBarSeries = new Series();
+        //    speedBarSeries.Points.DataBindY(yDataSpeed);
+        //    speedBarSeries.Color = Color.Orange;
+        //    speedBarSeries.ChartType = SeriesChartType.StackedColumn;
+        //    speedBarSeries.ChartArea = "Mileage Data";
+
+        //    Series longBarSeries = new Series();
+        //    longBarSeries.Points.DataBindY(yDataLong);
+        //    longBarSeries.Color = Color.DarkGreen;
+        //    longBarSeries.ChartType = SeriesChartType.StackedColumn;
+        //    longBarSeries.ChartArea = "Mileage Data";
+
+        //    Series easyBarSeries = new Series();
+        //    easyBarSeries.Points.DataBindY(yDataEasy);
+        //    easyBarSeries.Color = Color.LightGreen;
+        //    easyBarSeries.ChartType = SeriesChartType.StackedColumn;
+        //    easyBarSeries.ChartArea = "Mileage Data";
+
+
+        //    //Add the series to the chart
+
+        //    mileageChart.Series.Add(tempoBarSeries);
+        //    mileageChart.Series.Add(speedBarSeries);
+        //    mileageChart.Series.Add(longBarSeries);
+        //    mileageChart.Series.Add(easyBarSeries);
+
+
+        //    mileageChart.Series.Add(targetBarSeries);
+
+        //}
+
+
+        #endregion
     }
 }
 
-    
+
 

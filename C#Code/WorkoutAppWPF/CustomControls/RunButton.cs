@@ -250,8 +250,14 @@ namespace WorkoutAppWPF.ActivityTypes
             this.totalMileage = totalMileage;
 
             //update label
-            this.Content = this.runType.ToString()+ " " + (Math.Round(totalMileage*2)/2).ToString();
-
+            if (this.runType == RunTypes.Rest)
+            {
+                this.Content = "Rest";
+            }
+            else
+            {
+                this.Content = this.runType.ToString() + " " + (Math.Round(totalMileage * 2) / 2).ToString();
+            }
         }
 
         private void calculateEasyMileage()
