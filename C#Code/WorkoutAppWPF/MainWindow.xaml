@@ -7,7 +7,7 @@
         xmlns:DV="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:DVC="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
-        Title="Training Plan Builder" Height="900" Width="1500">
+        Title="Training Plan Builder" Height="800" Width="1500" WindowStartupLocation="CenterScreen">
 
 
 
@@ -34,7 +34,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="5"/>
-                <RowDefinition Height="*"/>
+
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
@@ -51,6 +51,23 @@
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <StackPanel Name = "mileageDefStackPanel" Orientation="Vertical">
 
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Target Race Date"  Grid.Column="0"></Label>
+                                <Label Content="Training Start Date" Grid.Column="1"></Label>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <DatePicker Name="targetRaceDateInput" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"></DatePicker>
+                                <DatePicker Name="targetTrainingStartDate" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" IsEnabled="False"  Grid.Column="1"/>
+                            </Grid>
+                            
                             <!--Cycle Definition-->
                             <Label Content = "Cycle Definition" Margin="0 0 0 0"></Label>
 
@@ -62,6 +79,7 @@
                                 <Label Content = "Number Of Cycles" Margin="0 0 0 0"  Grid.Column="0"></Label>
                                 <Label Content = "Number Of Weeks" Margin="0 0 0 0"  Grid.Column="1"></Label>
                             </Grid>
+                            
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -338,20 +356,7 @@
 
             </Grid>
 
-            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-
-            <Grid Grid.Row="2">
-                <StackPanel Name="chartStackPanel"  Grid.Column="4" Orientation="Horizontal">
-
-                    <DVC:Chart Name="mcChart" Canvas.Top="80" Canvas.Left="10" Width="1495" Height="160" Background="LightSteelBlue">
-                        <DVC:Chart.Series>
-                            <DVC:ColumnSeries Title="Experience" IndependentValueBinding="{Binding Path=Key}" DependentValueBinding="{Binding Path=Value}"> </DVC:ColumnSeries>
-                        </DVC:Chart.Series>
-                    </DVC:Chart>
-
-
-                </StackPanel>
-            </Grid>
+            
 
 
         </Grid>

@@ -61,7 +61,6 @@ namespace WorkoutAppWPF
             createRunTypeSelectorTable();
 
             createRunDefinitionTable();
-            LoadColumnChartData();
 
             SetPanel setPanel = addSetPanel(1);
             currentSetPanels.Add(setPanel);
@@ -77,7 +76,15 @@ namespace WorkoutAppWPF
 
             numCyclesInput.Text = 16.ToString();
             numDaysInput.Text = 9.ToString();
+
+
             numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) / 7 * 10) / 10).ToString();
+
+            DateTime startDate = DateTime.Today;
+
+            targetTrainingStartDate.SelectedDate = startDate;
+            targetRaceDateInput.SelectedDate  = startDate.AddDays(double.Parse(numCyclesInput.Text)* double.Parse(numDaysInput.Text));
+
             minMileageInput.Text = 15.ToString();
             maxMileageInput.Text = 50.ToString();
             cycleMileageIncrease.Text = 4.ToString();
@@ -1096,18 +1103,6 @@ namespace WorkoutAppWPF
 
         #region Mileage Plot
 
-        private void LoadColumnChartData()
-        {
-            ((ColumnSeries)mcChart.Series[0]).ItemsSource =
-                new KeyValuePair<string, int>[]{
-        new KeyValuePair<string,int>("Project Manager", 12),
-        new KeyValuePair<string,int>("CEO", 25),
-        new KeyValuePair<string,int>("Software Engg.", 5),
-        new KeyValuePair<string,int>("Team Leader", 6),
-        new KeyValuePair<string,int>("Project Leader", 10),
-        new KeyValuePair<string,int>("Developer", 4) };
-        }
-
         public void plotMileageData()
         {
 
@@ -1243,7 +1238,7 @@ namespace WorkoutAppWPF
 
             //mileageChart.Series.Add(targetBarSeries);
 
-            chartStackPanel.Children.Add(columnChart);
+            //chartStackPanel.Children.Add(columnChart);
         }
 
         //public void refreshMileageData()
