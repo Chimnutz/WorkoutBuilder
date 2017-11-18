@@ -35,6 +35,8 @@ namespace WorkoutAppWPF
         Grid runDefGrid;
 
         List<TextBox> mileageList;
+        List<TextBox> actualMileageList;
+        List<TextBox> stressIndexList;
         List<ComboBox> crossTrainInputList1;
         List<ComboBox> crossTrainInputList2;
         List<ComboBox> runInputList;
@@ -42,14 +44,6 @@ namespace WorkoutAppWPF
         List<List<RunButton>> runDefInputList;
         List<SetPanel> currentSetPanels = new List<SetPanel>();
         RunButton currentRunButton;
-
-        double[] xData;
-        double[] yDataTarget;
-        double[] yDataTempo;
-        double[] yDataSpeed;
-        double[] yDataLong;
-        double[] yDataEasy;
-        //PlotTools.Chart mileageChart;
 
         public MainWindowApp()
         {
@@ -109,15 +103,6 @@ namespace WorkoutAppWPF
             createMileageTable((int)double.Parse(numCyclesInput.Text));
 
 
-            //WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
-            //WorkoutDefStackPanel.Children.Remove(runTypeGrid);
-            //WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
-            //WorkoutDefStackPanel.Children.Remove(crossTrainGrid);
-            //createRunTypeSelectorTable();
-
-            //runDefStackPanel.Children.Remove(runDefGrid);
-            //createRunDefinitionTable();
-
         }
 
         private void recalcRunTable_click(object sender, EventArgs e)
@@ -136,12 +121,15 @@ namespace WorkoutAppWPF
 
         private void numCycles_Changed(object sender, EventArgs e)
         {
-            if (numCyclesInput.Text != "")
+            if ((numCyclesInput.Text != "") && (numDaysInput.Text != ""))
             {
                 if (double.Parse(numCyclesInput.Text) > 0)
                 {
                     numWeeksInput.Text = (Math.Round(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) / 7 * 10) / 10).ToString();
                 }
+
+                DateTime startDate = (DateTime)targetRaceDateInput.SelectedDate;
+                targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1);
             }
 
         }
@@ -156,9 +144,11 @@ namespace WorkoutAppWPF
         {
 
             mileageList = new List<TextBox>();
+            actualMileageList = new List<TextBox>();
+            stressIndexList = new List<TextBox>();
 
             mileageGrid = new Grid();
-            mileageGrid.Width = 150;
+            mileageGrid.Width = 250;
             mileageGrid.HorizontalAlignment = HorizontalAlignment.Left;
             mileageGrid.VerticalAlignment = VerticalAlignment.Top;
 
@@ -170,6 +160,14 @@ namespace WorkoutAppWPF
             ColumnDefinition gridCol2 = new ColumnDefinition();
             gridCol2.Width = new GridLength(3, GridUnitType.Star);
             mileageGrid.ColumnDefinitions.Add(gridCol2);
+
+            ColumnDefinition gridCol3 = new ColumnDefinition();
+            gridCol3.Width = new GridLength(3, GridUnitType.Star);
+            mileageGrid.ColumnDefinitions.Add(gridCol3);
+
+            ColumnDefinition gridCol4 = new ColumnDefinition();
+            gridCol4.Width = new GridLength(3, GridUnitType.Star);
+            mileageGrid.ColumnDefinitions.Add(gridCol4);
 
 
             int numberOfCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
@@ -187,18 +185,40 @@ namespace WorkoutAppWPF
             headerLabel1.Content = "Cycle";
             headerLabel1.FontWeight = FontWeights.Bold;
             headerLabel1.VerticalAlignment = VerticalAlignment.Top;
+            headerLabel1.HorizontalAlignment = HorizontalAlignment.Center;
             Grid.SetRow(headerLabel1, 0);
             Grid.SetColumn(headerLabel1, 0);
             mileageGrid.Children.Add(headerLabel1);
 
             Label headerLabel2 = new Label();
             headerLabel2.Margin = new Thickness(0, 10, 0, 0);
-            headerLabel2.Content = "Mileage";
+            headerLabel2.Content = "Target";
             headerLabel2.FontWeight = FontWeights.Bold;
             headerLabel2.VerticalAlignment = VerticalAlignment.Top;
+            headerLabel2.HorizontalAlignment = HorizontalAlignment.Center;
             Grid.SetRow(headerLabel2, 0);
             Grid.SetColumn(headerLabel2, 1);
             mileageGrid.Children.Add(headerLabel2);
+
+            Label headerLabel3 = new Label();
+            headerLabel3.Margin = new Thickness(0, 10, 0, 0);
+            headerLabel3.Content = "Actual";
+            headerLabel3.FontWeight = FontWeights.Bold;
+            headerLabel3.VerticalAlignment = VerticalAlignment.Top;
+            headerLabel3.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(headerLabel3, 0);
+            Grid.SetColumn(headerLabel3, 2);
+            mileageGrid.Children.Add(headerLabel3);
+
+            Label headerLabel4 = new Label();
+            headerLabel4.Margin = new Thickness(0, 10, 0, 0);
+            headerLabel4.Content = "SI";
+            headerLabel4.FontWeight = FontWeights.Bold;
+            headerLabel4.VerticalAlignment = VerticalAlignment.Top;
+            headerLabel4.HorizontalAlignment = HorizontalAlignment.Center;
+            Grid.SetRow(headerLabel4, 0);
+            Grid.SetColumn(headerLabel4, 3);
+            mileageGrid.Children.Add(headerLabel4);
 
             //build the table with the contols
             double mileageDelta = double.Parse(cycleMileageIncrease.Text);
@@ -270,6 +290,27 @@ namespace WorkoutAppWPF
                 Grid.SetRow(mileageText, ii + 1);
                 Grid.SetColumn(mileageText, 1);
                 mileageGrid.Children.Add(mileageText);
+
+                TextBox actualMileage = new TextBox();
+                actualMileage.PreviewTextInput += NumberValidationTextBox;
+                actualMileage.IsEnabled = false;
+                actualMileageList.Add(actualMileage);
+                actualMileage.Text = (0).ToString();
+                actualMileage.Margin = new Thickness(5, 0, 0, 0);
+                Grid.SetRow(actualMileage, ii + 1);
+                Grid.SetColumn(actualMileage, 2);
+                mileageGrid.Children.Add(actualMileage);
+
+                TextBox stressIndex = new TextBox();
+                stressIndex.PreviewTextInput += NumberValidationTextBox;
+                stressIndex.IsEnabled = false;
+                stressIndexList.Add(stressIndex);
+                stressIndex.Text = (0).ToString();
+                stressIndex.Margin = new Thickness(5, 0, 0, 0);
+                Grid.SetRow(stressIndex, ii + 1);
+                Grid.SetColumn(stressIndex, 3);
+                mileageGrid.Children.Add(stressIndex);
+
             }
 
             //add this control to the grid 
@@ -1069,6 +1110,13 @@ namespace WorkoutAppWPF
 
         }
 
+        private void targetRaceDay_Changed(object sender, EventArgs e)
+        {
+            DateTime startDate = (DateTime)targetRaceDateInput.SelectedDate;
+            targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1);
+
+        }
+
         private double convertToMiles(double distance, Units units)
         {
             double unitFactor = 1;
@@ -1101,224 +1149,6 @@ namespace WorkoutAppWPF
         }
 
 
-        #region Mileage Plot
-
-        public void plotMileageData()
-        {
-
-            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
-            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text)); 
-
-
-            xData = new double[numCycles];
-            yDataTarget = new double[numCycles];
-            yDataTempo = new double[numCycles];
-            yDataSpeed = new double[numCycles];
-            yDataLong = new double[numCycles];
-            yDataEasy = new double[numCycles];
-
-            //mileageChart.Series.Clear();
-
-            for (int ii = 0; ii < numCycles; ii++)
-            {
-                double easyMiles = 0;
-                double tempoMiles = 0;
-                double longMiles = 0;
-                double speedMiles = 0;
-                for(int jj = 0; jj < numDays; jj++)
-                {
-                    RunButton thisRunButton = runDefInputList[ii][jj];
-                    switch (thisRunButton.getRunType())
-                    {
-                        case (RunTypes.Easy):
-                            easyMiles = thisRunButton.getTotalMileage();
-                            break;
-                        case (RunTypes.Long):
-                            longMiles = thisRunButton.getTotalMileage();
-                            break;
-                        case (RunTypes.Tempo):
-                            easyMiles = thisRunButton.getEasyMileage();
-                            tempoMiles = thisRunButton.getWorkoutMileage();
-                            break;
-                        case (RunTypes.Interval):
-                            easyMiles = thisRunButton.getEasyMileage();
-                            speedMiles = thisRunButton.getWorkoutMileage();
-                            break;
-                    }
-                   
-                }
-
-
-                xData[ii] = ii + 1;
-                yDataTarget[ii] = double.Parse(mileageList[ii].Text);
-                yDataTempo[ii] = tempoMiles;
-                yDataSpeed[ii] = speedMiles;
-                yDataLong[ii] = longMiles;
-                yDataEasy[ii] = easyMiles;
-            }
-
-            Chart columnChart = new Chart();
-            //columnChart.ChartAreaStyle.;
-
-            BarSeries data = new BarSeries();
-
-
-            List<KeyValuePair<string, int>> valueList = new List<KeyValuePair<string, int>>();
-            valueList.Add(new KeyValuePair<string, int>("Developer", 60));
-            valueList.Add(new KeyValuePair<string, int>("Misc", 20));
-            valueList.Add(new KeyValuePair<string, int>("Tester", 50));
-            valueList.Add(new KeyValuePair<string, int>("QA", 30));
-            valueList.Add(new KeyValuePair<string, int>("Project Manager", 40));
-    
-
-
-            //Setting data for column chart
-            columnChart.DataContext = valueList;
-
-            //// Setting data for pie chart
-            //pieChart.DataContext = valueList;
-
-            ////Setting data for area chart
-            //areaChart.DataContext = valueList;
-
-            ////Setting data for bar chart
-            //barChart.DataContext = valueList;
-
-            ////Setting data for line chart
-            //lineChart.DataContext = valueList;
-
-
-            //Vertical bar chart
-            //create another area and add it to the chart
-            //ChartArea area = new PlotTools.ChartArea("Mileage Data");
-            //area.AxisX.Title = "Cycle #";
-            //area.AxisY.Title = "Mileage";
-            //mileageChart.ChartAreas.Add(area);
-
-            ////Create the series using just the y data
-            //PlotTools.Series targetBarSeries = new PlotTools.Series();
-            //targetBarSeries.Points.DataBindY(yDataTarget);
-            ////targetBarSeries.Color = Brushes.Blue;
-            //targetBarSeries.MarkerSize = 10;
-            //targetBarSeries.ChartType = PlotTools.SeriesChartType.Point;
-            //targetBarSeries.ChartArea = "Mileage Data";
-
-            //PlotTools.Series tempoBarSeries = new PlotTools.Series();
-            //tempoBarSeries.Points.DataBindY(yDataTempo);
-            ////tempoBarSeries.Color = Brushes.Orange;
-            //tempoBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            //tempoBarSeries.ChartArea = "Mileage Data";
-
-            //PlotTools.Series speedBarSeries = new PlotTools.Series();
-            //speedBarSeries.Points.DataBindY(yDataSpeed);
-            ////speedBarSeries.Color = Brushes.Orange;
-            //speedBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            //speedBarSeries.ChartArea = "Mileage Data";
-
-            //PlotTools.Series longBarSeries = new PlotTools.Series();
-            //longBarSeries.Points.DataBindY(yDataLong);
-            ////longBarSeries.Color = Brushes.DarkGreen;
-            //longBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            //longBarSeries.ChartArea = "Mileage Data";
-
-            //PlotTools.Series easyBarSeries = new PlotTools.Series();
-            //easyBarSeries.Points.DataBindY(yDataEasy);
-            ////easyBarSeries.Color = Brushes.LightGreen;
-            //easyBarSeries.ChartType = PlotTools.SeriesChartType.StackedColumn;
-            //easyBarSeries.ChartArea = "Mileage Data";
-
-
-            ////Add the series to the chart
-
-            //mileageChart.Series.Add(tempoBarSeries);
-            //mileageChart.Series.Add(speedBarSeries);
-            //mileageChart.Series.Add(longBarSeries);
-            //mileageChart.Series.Add(easyBarSeries);
-
-
-            //mileageChart.Series.Add(targetBarSeries);
-
-            //chartStackPanel.Children.Add(columnChart);
-        }
-
-        //public void refreshMileageData()
-        //{
-
-        //    int numCycles = (int)Math.Ceiling(numCyclesNumInput.Value);
-        //    xData = new double[numCycles];
-        //    yDataTarget = new double[numCycles];
-        //    yDataTempo = new double[numCycles];
-        //    yDataSpeed = new double[numCycles];
-        //    yDataLong = new double[numCycles];
-        //    yDataEasy = new double[numCycles];
-
-        //    mileageChart.Series.Clear();
-
-        //    for (int ii = 0; ii < numCycles; ii++)
-        //    {
-        //        xData[ii] = ii + 1;
-        //        yDataTarget[ii] = (double)((NumericUpDown)cycleMileageTable.GetControlFromPosition(1, ii)).Value;
-        //        yDataTempo[ii] = (double)Convert.ToDouble(((Label)tempoWorkoutTable.GetControlFromPosition(7, ii)).Text);
-        //        yDataSpeed[ii] = (double)Convert.ToDouble(((Label)speedWorkoutTable.GetControlFromPosition(11, ii)).Text);
-        //        yDataLong[ii] = (double)((NumericUpDown)longRunCycleTable.GetControlFromPosition(1, ii)).Value;
-        //        yDataEasy[ii] = 10;
-        //    }
-
-        //    //Vertical bar chart
-        //    //create another area and add it to the chart
-        //    ChartArea area = new ChartArea("Mileage Data");
-        //    area.AxisX.Title = "Cycle #";
-        //    area.AxisY.Title = "Mileage";
-        //    mileageChart.ChartAreas.Clear();
-        //    mileageChart.ChartAreas.Add(area);
-
-        //    //Create the series using just the y data
-        //    Series targetBarSeries = new Series();
-        //    targetBarSeries.Points.DataBindY(yDataTarget);
-        //    targetBarSeries.Color = Color.Blue;
-        //    targetBarSeries.MarkerSize = 10;
-        //    targetBarSeries.ChartType = SeriesChartType.Point;
-        //    targetBarSeries.ChartArea = "Mileage Data";
-
-        //    Series tempoBarSeries = new Series();
-        //    tempoBarSeries.Points.DataBindY(yDataTempo);
-        //    tempoBarSeries.Color = Color.Orange;
-        //    tempoBarSeries.ChartType = SeriesChartType.StackedColumn;
-        //    tempoBarSeries.ChartArea = "Mileage Data";
-
-        //    Series speedBarSeries = new Series();
-        //    speedBarSeries.Points.DataBindY(yDataSpeed);
-        //    speedBarSeries.Color = Color.Orange;
-        //    speedBarSeries.ChartType = SeriesChartType.StackedColumn;
-        //    speedBarSeries.ChartArea = "Mileage Data";
-
-        //    Series longBarSeries = new Series();
-        //    longBarSeries.Points.DataBindY(yDataLong);
-        //    longBarSeries.Color = Color.DarkGreen;
-        //    longBarSeries.ChartType = SeriesChartType.StackedColumn;
-        //    longBarSeries.ChartArea = "Mileage Data";
-
-        //    Series easyBarSeries = new Series();
-        //    easyBarSeries.Points.DataBindY(yDataEasy);
-        //    easyBarSeries.Color = Color.LightGreen;
-        //    easyBarSeries.ChartType = SeriesChartType.StackedColumn;
-        //    easyBarSeries.ChartArea = "Mileage Data";
-
-
-        //    //Add the series to the chart
-
-        //    mileageChart.Series.Add(tempoBarSeries);
-        //    mileageChart.Series.Add(speedBarSeries);
-        //    mileageChart.Series.Add(longBarSeries);
-        //    mileageChart.Series.Add(easyBarSeries);
-
-
-        //    mileageChart.Series.Add(targetBarSeries);
-
-        //}
-
-
-        #endregion
     }
 }
 

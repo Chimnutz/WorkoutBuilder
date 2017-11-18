@@ -64,7 +64,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <DatePicker Name="targetRaceDateInput" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"></DatePicker>
+                                <DatePicker Name="targetRaceDateInput" SelectedDateChanged="targetRaceDay_Changed" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" Grid.Column="0"></DatePicker>
                                 <DatePicker Name="targetTrainingStartDate" PreviewTextInput="NumberValidationTextBox" Width="100" HorizontalAlignment="Left" Margin="5 0 0 0" IsEnabled="False"  Grid.Column="1"/>
                             </Grid>
                             
