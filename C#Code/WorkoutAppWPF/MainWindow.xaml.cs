@@ -59,9 +59,9 @@ namespace WorkoutAppWPF
             SetPanel setPanel = addSetPanel(1);
             currentSetPanels.Add(setPanel);
 
-            TextBox thisTextBox = mileageList[0];
+            calculateTotalMiles();
 
-
+            saveSettings();
         }
 
         private void setDefaults()
@@ -515,7 +515,6 @@ namespace WorkoutAppWPF
 
                 //create a new list for the row
                 List<RunButton> cycleRunDefInputList = new List<RunButton>();
-                runDefInputList.Add(cycleRunDefInputList);
 
                 int numEasyRuns = 0;
                 double totalMileage = 0;
@@ -1108,12 +1107,48 @@ namespace WorkoutAppWPF
             Units coolDownUnits = (Units)Enum.Parse(typeof(Units), coolDownDistanceUnits.SelectedValue.ToString(), true);
             currentRunButton.addCooldown(coolDownDistance, coolDownUnits, Pace.Easy);
 
+            calculateTotalMiles();
+
         }
 
         private void targetRaceDay_Changed(object sender, EventArgs e)
         {
             DateTime startDate = (DateTime)targetRaceDateInput.SelectedDate;
             targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1);
+
+        }
+
+        private void calculateTotalMiles()
+        {
+            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
+            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+
+            for (int ii =0; ii<numCycles; ii++)
+            {
+                double totalMileage = 0;
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    RunButton thisRunButton = runDefInputList[ii][jj];
+
+                    totalMileage = totalMileage + thisRunButton.getTotalMileage();
+
+                }
+
+                double targetMileage = double.Parse(mileageList[ii].Text);
+
+                actualMileageList[ii].Text = (Math.Round(totalMileage*10)/10).ToString();
+
+                //TODO: Need to get this working
+                if(totalMileage> targetMileage)
+                {
+                    actualMileageList[ii].Background = Brushes.Red;
+                }else
+                {
+                    actualMileageList[ii].Background = Brushes.Green;
+                }
+
+            }
+
 
         }
 
@@ -1148,6 +1183,22 @@ namespace WorkoutAppWPF
             return convertedMiles;
         }
 
+        private void saveSettings()
+        {
+
+            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
+            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+            ApplicationSettings appSettings = new ApplicationSettings();
+
+            for(int ii = 0; ii< numCycles; ii++)
+            {
+                appSettings.targetMileage.Add(mileageList[ii].Text);
+                appSettings.actualMileage.Add(actualMileageList[ii].Text);
+            }
+
+            appSettings.Save();
+
+        }
 
     }
 }
