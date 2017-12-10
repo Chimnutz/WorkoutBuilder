@@ -15,6 +15,38 @@ namespace WorkoutAppWPF
         // Insert configurable values below:
         public List<string> targetMileage { get; set; } = new List<string>();
         public List<string> actualMileage { get; set; } = new List<string>();
+        public DateTime targetRaceDay { get; set; } = new DateTime();
+        public string numberOfCycles { get; set; }
+        public string numDaysInCycle { get; set; }
+        public string startingMileage { get; set; }
+        public string endingMileage { get; set; }
+        public string cycleIncrease { get; set; }
+        public string cycleDelta { get; set; }
+        public string numCyclesReset { get; set; }
+        public List<String> dailyRunTypeList { get; set; } = new List<String>();
+        public List<String> dailyWorkoutTypeList { get; set; } = new List<String>();
+        public List<String> CT1TypeList { get; set; } = new List<String>();
+        public List<String> CT2TypeList { get; set; } = new List<String>();
+
+        public List<List<RunTypes>> runType { get; set; } = new List<List<RunTypes>>();
+
+        public List<List<double>> warmupDist { get; set; } = new List<List<double>>();
+        public List<List<Pace>> warmupPace { get; set; } = new List<List<Pace>>();
+        public List<List<Units>> warmupUnits { get; set; } = new List<List<Units>>();
+
+        public List<List<int>> numSets { get; set; } = new List<List<int>>();
+        public List<List<List<int>>> numReps { get; set; } = new List<List<List<int>>>();
+        public List<List<List<double>>> repDistance { get; set; } = new List<List<List<double>>>();
+        public List<List<List<Units>>> repUnits { get; set; } = new List<List<List<Units>>>();
+        public List<List<List<Pace>>> repPace { get; set; } = new List<List<List<Pace>>>();
+        public List<List<List<double>>> repCoolDistance { get; set; } = new List<List<List<double>>>();
+        public List<List<List<Units>>> repCoolUnits { get; set; } = new List<List<List<Units>>>();
+        public List<List<List<Pace>>> repCoolPace { get; set; } = new List<List<List<Pace>>>();
+
+        public List<List<double>> coolDownDist { get; set; } = new List<List<double>>();
+        public List<List<Pace>> coolDownPace { get; set; } = new List<List<Pace>>();
+        public List<List<Units>> coolDownUnits { get; set; } = new List<List<Units>>();
+
 
         // Sets the default values of all configurable values.
         private void SetDefaultValues()

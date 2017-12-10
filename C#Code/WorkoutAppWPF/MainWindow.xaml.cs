@@ -1196,6 +1196,86 @@ namespace WorkoutAppWPF
                 appSettings.actualMileage.Add(actualMileageList[ii].Text);
             }
 
+            appSettings.targetRaceDay = (DateTime)targetRaceDateInput.SelectedDate;
+            appSettings.numberOfCycles = numCyclesInput.Text;
+            appSettings.numDaysInCycle = numDaysInput.Text;
+            appSettings.startingMileage = minMileageInput.Text;
+            appSettings.endingMileage = maxMileageInput.Text;
+            appSettings.cycleIncrease = cycleMileageIncrease.Text;
+            appSettings.cycleDelta = cycleMileageDeltaInput.Text;
+            appSettings.numCyclesReset = numCyclesReset.Text;
+
+            for (int ii = 0; ii < numDays; ii++)
+            {
+                appSettings.dailyRunTypeList.Add(runInputList[ii].SelectedItem.ToString());
+                appSettings.dailyWorkoutTypeList.Add(weightTrainInputList[ii].SelectedItem.ToString());
+                appSettings.CT1TypeList.Add(crossTrainInputList1[ii].SelectedItem.ToString());
+                appSettings.CT2TypeList.Add(crossTrainInputList2[ii].SelectedItem.ToString());
+            }
+
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+
+                List<RunTypes> runTypesList = new List<RunTypes>();
+
+                List<double> warmupDistance = new List<double>();
+                List<Pace> warmupPace = new List<Pace>();
+                List<Units> warmupUnits = new List<Units>();
+
+                List<List<int>> numReps = new List<List<int>>();
+                List<int> numSets = new List<int>();
+                List<List<double>> repDistance = new List<List<double>>();
+                List<List<Pace>> repPace = new List<List<Pace>>();
+                List<List<Units>> repUnits = new List<List<Units>>();
+                List<List<double>> repCoolDistance = new List<List<double>>();
+                List<List<Pace>> repCoolPace = new List<List<Pace>>();
+                List<List<Units>> repCoolUnits = new List<List<Units>>();
+
+                List<double> coolDownDistance = new List<double>();
+                List<Pace> coolDownPace = new List<Pace>();
+                List<Units> coolDownUnits = new List<Units>();
+
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    RunButton thisRunButton = runDefInputList[ii][jj];
+
+                    warmupDistance.Add(thisRunButton.getWarmupDistance());
+                    warmupPace.Add(thisRunButton.getWarmupPace());
+                    warmupUnits.Add(thisRunButton.getWarmupUnits());
+
+                    numSets.Add(thisRunButton.getNumberOfReps().Count);
+                    numReps.Add(thisRunButton.getNumberOfReps());
+                    repDistance.Add(thisRunButton.getRepDistance());
+                    repUnits.Add(thisRunButton.getRepUnits());
+                    repPace.Add(thisRunButton.getRepPace());
+                    repCoolDistance.Add(thisRunButton.getRepCoolDistance());
+                    repCoolUnits.Add(thisRunButton.getRepCoolUnits());
+                    repCoolPace.Add(thisRunButton.getRepCoolPace());
+
+                    coolDownDistance.Add(thisRunButton.getCoolDistance());
+                    coolDownPace.Add(thisRunButton.getCoolPace());
+                    coolDownUnits.Add(thisRunButton.getCoolUnits());
+                }
+
+                appSettings.warmupDist.Add(warmupDistance);
+                appSettings.warmupPace.Add(warmupPace);
+                appSettings.warmupUnits.Add(warmupUnits);
+
+                appSettings.numSets.Add(numSets);
+                appSettings.numReps.Add(numReps);
+                appSettings.repDistance.Add(repDistance);
+                appSettings.repUnits.Add(repUnits);
+                appSettings.repPace.Add(repPace);
+                appSettings.repCoolDistance.Add(repCoolDistance);
+                appSettings.repCoolUnits.Add(repCoolUnits);
+                appSettings.repCoolPace.Add(repCoolPace);
+
+                appSettings.coolDownDist.Add(coolDownDistance);
+                appSettings.coolDownPace.Add(coolDownPace);
+                appSettings.coolDownUnits.Add(coolDownUnits); 
+
+            }
+
             appSettings.Save();
 
         }
