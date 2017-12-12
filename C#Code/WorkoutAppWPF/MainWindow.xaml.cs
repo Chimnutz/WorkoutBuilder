@@ -1183,6 +1183,22 @@ namespace WorkoutAppWPF
             return convertedMiles;
         }
 
+        private void newMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void loadMenuItem_Click(object sender, EventArgs e)
+        {
+            loadSettings();
+        }
+
+        private void saveMenuItem_Click(object sender, EventArgs e)
+        {
+            saveSettings();
+        }
+
+
         private void saveSettings()
         {
 
@@ -1239,6 +1255,8 @@ namespace WorkoutAppWPF
                 {
                     RunButton thisRunButton = runDefInputList[ii][jj];
 
+                    runTypesList.Add(thisRunButton.getRunType());
+
                     warmupDistance.Add(thisRunButton.getWarmupDistance());
                     warmupPace.Add(thisRunButton.getWarmupPace());
                     warmupUnits.Add(thisRunButton.getWarmupUnits());
@@ -1256,6 +1274,8 @@ namespace WorkoutAppWPF
                     coolDownPace.Add(thisRunButton.getCoolPace());
                     coolDownUnits.Add(thisRunButton.getCoolUnits());
                 }
+
+                appSettings.runType.Add(runTypesList);
 
                 appSettings.warmupDist.Add(warmupDistance);
                 appSettings.warmupPace.Add(warmupPace);
@@ -1280,6 +1300,109 @@ namespace WorkoutAppWPF
 
         }
 
+        private void loadSettings()
+        {
+
+            ApplicationSettings.Load();
+            ApplicationSettings appSettings = ApplicationSettings.Instance;
+
+            int numCycles = (int)double.Parse(appSettings.numberOfCycles);
+            int numDays = (int)double.Parse(appSettings.numDaysInCycle);
+
+            numCyclesInput.Text = appSettings.numberOfCycles;
+            numDaysInput.Text = appSettings.numDaysInCycle;
+            targetRaceDateInput.SelectedDate = appSettings.targetRaceDay;
+            numCyclesInput.Text = appSettings.numberOfCycles;
+            numDaysInput.Text = appSettings.numDaysInCycle;
+            minMileageInput.Text = appSettings.startingMileage;
+            maxMileageInput.Text = appSettings.endingMileage;
+            cycleMileageIncrease.Text = appSettings.cycleIncrease;
+            cycleMileageDeltaInput.Text = appSettings.cycleDelta;
+            numCyclesReset.Text = appSettings.numCyclesReset;
+
+            //create the mileage table
+            mileageDefStackPanel.Children.Remove(mileageGrid);
+            createMileageTable((int)double.Parse(numCyclesInput.Text));
+
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                mileageList[ii].Text = appSettings.targetMileage[ii];
+                actualMileageList[ii].Text = appSettings.actualMileage[ii];
+            }
+
+            //create run type selctions
+            WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
+            WorkoutDefStackPanel.Children.Remove(runTypeGrid);
+            WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
+            WorkoutDefStackPanel.Children.Remove(crossTrainGrid1);
+            WorkoutDefStackPanel.Children.Remove(crossTrainGrid2);
+            createRunTypeSelectorTable();
+
+            //create run def grid
+            runDefStackPanel.Children.Remove(runDefGrid);
+            createRunDefinitionTable();
+
+
+            for (int ii = 0; ii < numDays; ii++)
+            {
+                runInputList[ii].SelectedItem = appSettings.dailyRunTypeList[ii];
+                weightTrainInputList[ii].SelectedItem = appSettings.dailyWorkoutTypeList[ii];
+                crossTrainInputList1[ii].SelectedItem = appSettings.CT1TypeList[ii];
+                crossTrainInputList2[ii].SelectedItem = appSettings.CT2TypeList[ii];
+            }
+
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+
+                List<RunTypes> runTypesList = appSettings.runType[ii];
+
+                List<double> warmupDistance = appSettings.warmupDist[ii];
+                List<Pace> warmupPace = appSettings.warmupPace[ii];
+                List<Units> warmupUnits = appSettings.warmupUnits[ii];
+
+                List<List<int>> numReps = appSettings.numReps[ii];
+                List<int> numSets = appSettings.numSets[ii];
+                List<List<double>> repDistance = appSettings.repDistance[ii];
+                List<List<Pace>> repPace = appSettings.repPace[ii];
+                List<List<Units>> repUnits = appSettings.repUnits[ii];
+                List<List<double>> repCoolDistance = appSettings.repCoolDistance[ii];
+                List<List<Pace>> repCoolPace = appSettings.repCoolPace[ii];
+                List<List<Units>> repCoolUnits = appSettings.repCoolUnits[ii];
+
+                List<double> coolDownDistance = appSettings.coolDownDist[ii];
+                List<Pace> coolDownPace = appSettings.coolDownPace[ii];
+                List<Units> coolDownUnits = appSettings.coolDownUnits[ii];
+
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    RunButton currentRunButton = runDefInputList[ii][jj];
+
+                    //clear out old data
+                    //currentRunButton = new RunButton();
+                    currentRunButton.clearData();
+
+                    //set run type
+                    currentRunButton.setRunType(runTypesList[jj]);
+
+                    //add warmup
+                    currentRunButton.addWarmup(warmupDistance[jj], warmupUnits[jj], warmupPace[jj]);
+
+                    //workout
+                    for (int kk = 0; kk < numSets[jj]; kk++)
+                    {
+                        currentRunButton.addWorkout(numReps[jj][kk], repDistance[jj][kk], repUnits[jj][kk], repPace[jj][kk], repCoolDistance[jj][kk], repCoolUnits[jj][kk], repCoolPace[jj][kk]);
+                    }
+
+                    //add cooldown
+                    currentRunButton.addCooldown(coolDownDistance[jj], coolDownUnits[jj], coolDownPace[jj]);
+
+                    calculateTotalMiles();
+                }
+
+
+
+            }
+        }
     }
 }
 

@@ -83,6 +83,7 @@ namespace WorkoutAppWPF
 
             using (var fStream = new FileStream(ApplicationSettings.FileName, FileMode.Open))
                 ApplicationSettings.Instance = (ApplicationSettings)serializer.Deserialize(fStream);
+
         }
 
         // Saves the configuration to file.
