@@ -21,11 +21,7 @@
             </MenuItem>
 
             <MenuItem Header ="Tools" >
-                <MenuItem Header="_Long Run Builder"/>
-                <MenuItem Header="_Tempo Builder"/>
-                <MenuItem Header="_Interval Builder"/>
-                <MenuItem Header="_Repition Builder"/>
-                <MenuItem Header="_Easy Run Builder"/>
+                <MenuItem Header="_Export To Excel" Name="excelExportMenuItem" Click="excelExportMenuItem_Click"/>
             </MenuItem>
         </Menu>
 

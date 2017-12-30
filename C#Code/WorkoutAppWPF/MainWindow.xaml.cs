@@ -799,13 +799,13 @@ namespace WorkoutAppWPF
 
                     crossTrainInputList1[0].SelectedItem = "Rest";
                     crossTrainInputList1[1].SelectedItem = "Rest";
-                    crossTrainInputList1[2].SelectedItem = "Swim";
-                    crossTrainInputList1[3].SelectedItem = "Bike";
+                    crossTrainInputList1[2].SelectedItem = "Bike";
+                    crossTrainInputList1[3].SelectedItem = "Rest";
                     crossTrainInputList1[4].SelectedItem = "Rest";
-                    crossTrainInputList1[5].SelectedItem = "Bike";
-                    crossTrainInputList1[6].SelectedItem = "Swim";
+                    crossTrainInputList1[5].SelectedItem = "Swim";
+                    crossTrainInputList1[6].SelectedItem = "Rest";
                     crossTrainInputList1[7].SelectedItem = "Rest";
-                    crossTrainInputList1[7].SelectedItem = "Rest";
+                    crossTrainInputList1[8].SelectedItem = "Swim";
 
                     crossTrainInputList2[0].SelectedItem = "Rest";
                     crossTrainInputList2[1].SelectedItem = "Rest";
@@ -1198,6 +1198,326 @@ namespace WorkoutAppWPF
             saveSettings();
         }
 
+        private void excelExportMenuItem_Click(object sender, EventArgs e)
+        {
+            List<List<ComboBox>> weightTrainCycleList = new List<List<ComboBox>>();
+            List<List<ComboBox>> crossTrainCycleList1 = new List<List<ComboBox>>();
+            List<List<ComboBox>> crossTrainCycleList2 = new List<List<ComboBox>>();
+            List<List<RunButton>> runCycleList = new List<List<RunButton>>();
+
+            int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
+            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+
+            //write cycle data
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                weightTrainCycleList.Add(weightTrainInputList);
+                crossTrainCycleList1.Add(crossTrainInputList1);
+                crossTrainCycleList2.Add(crossTrainInputList2);
+            }
+
+            runCycleList = runDefInputList;
+
+            exportPlanToExcel(2, runDefInputList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2);
+
+
+            weightTrainCycleList = new List<List<ComboBox>>();
+            crossTrainCycleList1 = new List<List<ComboBox>>();
+            crossTrainCycleList2 = new List<List<ComboBox>>();
+            runCycleList = new List<List<RunButton>>();
+
+            List<ComboBox> weightTrainWeekList = new List<ComboBox>();
+            List<ComboBox> crossTrainWeekList1 = new List<ComboBox>();
+            List<ComboBox> crossTrainWeekList2 = new List<ComboBox>();
+            List<RunButton> runWeekList = new List<RunButton>();
+
+            int dayCount = 1;
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                for (int jj = 0; jj < numDays; jj++)
+                {
+
+                    runWeekList.Add(runDefInputList[ii][jj]);
+                    weightTrainWeekList.Add(weightTrainInputList[jj]);
+                    crossTrainWeekList1.Add(crossTrainInputList1[jj]);
+                    crossTrainWeekList2.Add(crossTrainInputList2[jj]);
+
+                    if (dayCount == 7)
+                    {
+                        runCycleList.Add(runWeekList);
+                        weightTrainCycleList.Add(weightTrainWeekList);
+                        crossTrainCycleList1.Add(crossTrainWeekList1);
+                        crossTrainCycleList2.Add(crossTrainWeekList2);
+
+                        weightTrainWeekList = new List<ComboBox>();
+                        crossTrainWeekList1 = new List<ComboBox>();
+                        crossTrainWeekList2 = new List<ComboBox>();
+                        runWeekList = new List<RunButton>();
+                        dayCount = 0;
+                    }
+
+                    dayCount++;
+                }
+
+            }
+
+            ComboBox defaultCTBox = new ComboBox();
+            defaultCTBox.Items.Add("Rest");
+            defaultCTBox.SelectedItem = "Rest";
+
+            RunButton defaultRunButton = new RunButton();
+            defaultRunButton.setRunType(RunTypes.Rest);
+
+            if (dayCount != 1)
+            {
+                //fill in the blanks
+                for (int ii = dayCount - 1; ii < 7; ii++)
+                {
+                    runWeekList.Add(defaultRunButton);
+                    weightTrainWeekList.Add(defaultCTBox);
+                    crossTrainWeekList1.Add(defaultCTBox);
+                    crossTrainWeekList2.Add(defaultCTBox);
+                }
+
+                runCycleList.Add(runWeekList);
+                weightTrainCycleList.Add(weightTrainWeekList);
+                crossTrainCycleList1.Add(crossTrainWeekList1);
+                crossTrainCycleList2.Add(crossTrainWeekList2);
+            }
+
+            exportPlanToExcel(1, runCycleList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2);
+        }
+
+        private void exportPlanToExcel(int sheetIdx, List<List<RunButton>> runButtonList, List<List<ComboBox>> weightTrainCycleList, List<List<ComboBox>> crossTrainCycleList1, List<List<ComboBox>> crossTrainCycleList2)
+        {
+            ExcelExportUtility excelExportUtility = new ExcelExportUtility();
+
+            //ToDo: Add file load utility
+            string filePath = "C:\\Misc\\Workout_Test.xls";
+            excelExportUtility.createWorkbook();
+
+            //get number of cycles and number of days
+            int numCycles = runButtonList.Count;
+            int numDays = runButtonList[0].Count;
+
+            //initilize row pointer
+            int rowPointer = 1;
+
+            //loop through days to create header with day number
+            for (int jj = 0; jj < numDays; jj++)
+            {
+                excelExportUtility.writeSingleCell(rowPointer, jj + 2, "Day " + (jj + 1).ToString(), sheetIdx);
+                excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.LightGray, sheetIdx);
+                excelExportUtility.setNormalBorderOutline(rowPointer, jj + 2, rowPointer, jj + 2, sheetIdx);
+            }
+            //increment row pointer
+            rowPointer = rowPointer + 1;
+
+            //get training start date
+            DateTime currDate = (DateTime)targetTrainingStartDate.SelectedDate;
+
+            //loop through each cycle to extrat information
+            for (int ii = 0; ii < numCycles; ii++)
+            {
+                //set start of cycle for thick boarder
+                int rowStart = rowPointer;
+
+                //write the cycle number and date to the first column
+                excelExportUtility.writeSingleCell(rowPointer, 1, "Cycle " + (ii + 1), sheetIdx);
+                excelExportUtility.writeSingleCell(rowPointer + 1, 1, currDate, sheetIdx);
+                excelExportUtility.writeSingleCell(rowPointer + 3, 1, "Target Mileage", sheetIdx);
+                excelExportUtility.writeSingleCell(rowPointer + 4, 1, "Actual Mileage", sheetIdx);
+                excelExportUtility.setNormalBorderOutline(rowPointer, 1, rowPointer, 1, sheetIdx);
+
+                //loop though each day
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    //get current run button
+                    RunButton thisRunButton = runButtonList[ii][jj];
+
+                    //get run type of this button
+                    RunTypes thisRunType = thisRunButton.getRunType();
+
+                    //init text to write for run and total mileage
+                    string runText = "";
+                    double totalMileage = 0;
+
+                    //get data for workouts
+                    List<int> workoutReps = thisRunButton.getNumberOfReps();
+                    List<double> workoutDist = thisRunButton.getRepDistance();
+                    List<Pace> workoutPace = thisRunButton.getRepPace();
+                    List<Units> workoutUnits = thisRunButton.getRepUnits();
+                    int numSets = thisRunButton.getNumberOfReps().Count;
+
+                    //init brush color
+                    SolidColorBrush cellColor = Brushes.LightBlue;
+
+                    //create text based on runtype
+                    switch (thisRunType)
+                    {
+                        case RunTypes.Easy:
+                            runText = thisRunButton.getTotalMileage().ToString() + "Miles Easy";
+                            totalMileage = thisRunButton.getTotalMileage();
+                            cellColor = Brushes.LightGreen;
+                            break;
+                        case RunTypes.Tempo:
+                            //get warmup info
+                            runText = thisRunButton.getWarmupDistance().ToString() + thisRunButton.getWarmupUnits().ToString() + " Warmup \n";
+
+                            //loop through each set
+                            for (int kk = 0; kk < numSets; kk++)
+                            {
+                                runText = runText + workoutReps[kk].ToString() + "X" + workoutDist[kk].ToString() + workoutUnits[kk].ToString() + " @ " + workoutPace[kk].ToString() + "\n";
+                            }
+
+                            //get cool down info
+                            runText = runText + thisRunButton.getCoolDistance().ToString() + thisRunButton.getCoolUnits().ToString() + " Cooldown";
+                            cellColor = Brushes.Orange;
+                            break;
+                        case RunTypes.Interval:
+                            //get warmup info
+                            runText = thisRunButton.getWarmupDistance().ToString() + thisRunButton.getWarmupUnits().ToString() + " Warmup \n";
+
+                            //loop through each set
+                            for (int kk = 0; kk < numSets; kk++)
+                            {
+                                runText = runText + workoutReps[kk].ToString() + "X" + workoutDist[kk].ToString() + workoutUnits[kk].ToString() + " @ " + workoutPace[kk].ToString() + "\n";
+                            }
+
+                            //get cool down info
+                            runText = runText + thisRunButton.getCoolDistance().ToString() + thisRunButton.getCoolUnits().ToString() + " Cooldown";
+                            cellColor = Brushes.Orange;
+                            break;
+                        case RunTypes.Long:
+                            runText = thisRunButton.getTotalMileage().ToString() + "Miles Easy";
+                            totalMileage = thisRunButton.getTotalMileage();
+                            cellColor = Brushes.Green;
+                            break;
+                        case RunTypes.Rest:
+                            runText = "Rest";
+                            totalMileage = thisRunButton.getTotalMileage();
+                            cellColor = Brushes.LightBlue;
+                            break;
+                        case RunTypes.Repition:
+                            //get warmup info
+                            runText = thisRunButton.getWarmupDistance().ToString() + thisRunButton.getWarmupUnits().ToString() + " Warmup \n";
+
+                            //loop through each set
+                            for (int kk = 0; kk < numSets; kk++)
+                            {
+                                runText = runText + workoutReps[kk].ToString() + "X" + workoutDist[kk].ToString() + workoutUnits[kk].ToString() + " @ " + workoutPace[kk].ToString() + "\n";
+                            }
+
+                            //get cool down info
+                            runText = runText + thisRunButton.getCoolDistance().ToString() + thisRunButton.getCoolUnits().ToString() + " Cooldown";
+                            cellColor = Brushes.Orange;
+                            break;
+                    }
+
+                    //write the data to a cell
+                    excelExportUtility.writeSingleCell(rowPointer, jj + 2, runText, sheetIdx);
+                    excelExportUtility.setCellColor(rowPointer, jj + 2, cellColor,sheetIdx);
+                    excelExportUtility.setNormalBorderOutline(rowPointer, jj + 2, rowPointer, jj + 2, sheetIdx);
+
+                }
+                //increment row pointer
+                rowPointer = rowPointer + 1;
+
+                //loop through each day to extract weight lift info
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    //write date
+                    excelExportUtility.writeSingleCell(rowPointer, jj + 2, weightTrainCycleList[ii][jj].SelectedItem.ToString(),sheetIdx);
+                    excelExportUtility.setNormalBorderOutline(rowPointer, jj + 2, rowPointer, jj + 2, sheetIdx);
+
+                    //set color to yellow if there is a workout
+                    if (weightTrainCycleList[ii][jj].SelectedItem.ToString() != "Rest")
+                    {
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.Yellow, sheetIdx);
+                    }
+                    else
+                    {
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.LightBlue, sheetIdx);
+                    }
+                }
+                //set row hieght
+                excelExportUtility.setRowHeight(rowPointer, sheetIdx, 20);
+
+                //increment row pointer
+                rowPointer = rowPointer + 1;
+
+                //create text for each days cross train
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    //extract information
+                    string crossTrain1 = crossTrainCycleList1[ii][jj].SelectedItem.ToString();
+                    string crossTrain2 = crossTrainCycleList2[ii][jj].SelectedItem.ToString();
+
+                    string output = "";
+
+                    //set text based on populated info
+                    if (crossTrain1 == "Rest" && crossTrain1 == "Rest")
+                    {
+                        output = "Rest";
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.LightBlue, sheetIdx);
+                    }
+                    else if (crossTrain1 != "Rest" && crossTrain2 == "Rest")
+                    {
+                        output = crossTrain1;
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.Yellow, sheetIdx);
+
+                    }
+                    else if (crossTrain1 == "Rest" && crossTrain2 != "Rest")
+                    {
+                        output = crossTrain2;
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.Yellow, sheetIdx);
+                    }
+                    else
+                    {
+                        output = crossTrain1 + "+" + crossTrain2;
+                        excelExportUtility.setCellColor(rowPointer, jj + 2, Brushes.Yellow, sheetIdx);
+                    }
+
+                    //write data to excel
+                    excelExportUtility.writeSingleCell(rowPointer, jj + 2, output, sheetIdx);
+                    excelExportUtility.setNormalBorderOutline(rowPointer, jj + 2, rowPointer, jj + 2, sheetIdx);
+                }
+                //set row height
+                excelExportUtility.setRowHeight(rowPointer,sheetIdx, 20);
+
+                //increment row pointer
+                rowPointer = rowPointer + 1;
+
+                //set data for mileage total for each day and week
+                double weeklyTotalMileage = 0;
+                for (int jj = 0; jj < numDays; jj++)
+                {
+                    RunButton thisRunButton = runButtonList[ii][jj];
+                    weeklyTotalMileage = thisRunButton.getTotalMileage() + weeklyTotalMileage;
+                    excelExportUtility.writeSingleCell(rowPointer, jj + 2, (Math.Round(thisRunButton.getTotalMileage() * 10) / 10).ToString(),sheetIdx);
+                    excelExportUtility.setNormalBorderOutline(rowPointer, jj + 2, rowPointer, jj + 2, sheetIdx);
+                    excelExportUtility.setNormalBorderOutline(rowPointer+1, jj + 2, rowPointer+1, jj + 2, sheetIdx);
+                }
+                excelExportUtility.writeSingleCell(rowPointer, numDays + 2, (Math.Round(weeklyTotalMileage * 10) / 10).ToString(),sheetIdx);
+                excelExportUtility.setRowHeight(rowPointer, sheetIdx, 20);
+                excelExportUtility.setRowHeight(rowPointer+1, sheetIdx, 20);
+
+                //add row to record actual mileage
+                rowPointer++;
+
+                //draw thick boarder around cycle
+                int rowEnd = rowPointer;
+                excelExportUtility.setThickBorderOutline(rowStart, 1, rowEnd, numDays + 1, sheetIdx);
+
+                //increment row pointer and cycle start date
+                rowPointer = rowPointer + 1;
+                currDate = currDate.AddDays(numDays);
+
+
+            }
+            //save the workbook
+            excelExportUtility.saveWorkbook(filePath);
+        }
 
         private void saveSettings()
         {
