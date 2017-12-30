@@ -77,7 +77,7 @@ namespace WorkoutAppWPF
             DateTime startDate = DateTime.Today;
 
             targetTrainingStartDate.SelectedDate = startDate;
-            targetRaceDateInput.SelectedDate  = startDate.AddDays(double.Parse(numCyclesInput.Text)* double.Parse(numDaysInput.Text));
+            targetRaceDateInput.SelectedDate  = startDate.AddDays(double.Parse(numCyclesInput.Text)* double.Parse(numDaysInput.Text)-1);
 
             minMileageInput.Text = 15.ToString();
             maxMileageInput.Text = 50.ToString();
@@ -129,7 +129,8 @@ namespace WorkoutAppWPF
                 }
 
                 DateTime startDate = (DateTime)targetRaceDateInput.SelectedDate;
-                targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1);
+
+                targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1 + 1);
             }
 
         }
@@ -1114,7 +1115,7 @@ namespace WorkoutAppWPF
         private void targetRaceDay_Changed(object sender, EventArgs e)
         {
             DateTime startDate = (DateTime)targetRaceDateInput.SelectedDate;
-            targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1);
+            targetTrainingStartDate.SelectedDate = startDate.AddDays(double.Parse(numCyclesInput.Text) * double.Parse(numDaysInput.Text) * -1 + 1);
 
         }
 
