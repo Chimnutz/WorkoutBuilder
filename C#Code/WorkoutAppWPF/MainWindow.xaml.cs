@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 using WorkoutAppWPF.ActivityTypes;
 using WorkoutAppWPF.CustomControls;
 using System.Windows.Controls.DataVisualization.Charting;
+using Microsoft.Win32;
+using System.Threading;
 //using PlotTools = System.Windows.Forms.DataVisualization.Charting;
 
 namespace WorkoutAppWPF
@@ -60,8 +62,6 @@ namespace WorkoutAppWPF
             currentSetPanels.Add(setPanel);
 
             calculateTotalMiles();
-
-            saveSettings();
         }
 
         private void setDefaults()
@@ -1183,22 +1183,94 @@ namespace WorkoutAppWPF
             return convertedMiles;
         }
 
-        private void newMenuItem_Click(object sender, EventArgs e)
-        {
+        //private void newMenuItem_Click(object sender, EventArgs e)
+        //{
 
-        }
+        //}
 
         private void loadMenuItem_Click(object sender, EventArgs e)
         {
-            loadSettings();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = @"C:\";
+            openFileDialog.Title = "Select File To Load";
+            openFileDialog.DefaultExt = ".xml";
+            openFileDialog.Filter = "Settings (*.xml)|*.xml|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
+            openFileDialog.RestoreDirectory = true;
+
+            // Show save file dialog box
+            Nullable<bool> result = openFileDialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filePath = openFileDialog.FileName;
+                this.Title = "Training Paln Builder - Opening...";
+                loadSettings(filePath);
+                this.Title = "Training Paln Builder";
+            }
+
+           
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
-            saveSettings();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = @"C:\";
+            saveFileDialog.Title = "Select File To Save";
+            saveFileDialog.DefaultExt = ".xml";
+            saveFileDialog.Filter = "Settings (*.xml)|*.xml|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.CheckFileExists = false;
+            saveFileDialog.CheckPathExists = true;
+            saveFileDialog.RestoreDirectory = true;
+
+            // Show save file dialog box
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filePath = saveFileDialog.FileName;
+                this.Title = "Training Paln Builder - Saving...";
+                saveSettings(filePath);
+                this.Title = "Training Paln Builder";
+            }
+
         }
 
+
         private void excelExportMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = @"C:\";
+            saveFileDialog.Title = "Select File To Save";
+            saveFileDialog.DefaultExt = "xlsx";
+            saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.CheckFileExists = false;
+            saveFileDialog.CheckPathExists = true;
+            saveFileDialog.RestoreDirectory = true;
+
+            // Show save file dialog box
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filePath = saveFileDialog.FileName;
+                this.Title = "Training Paln Builder - Saving...";
+                exportWorkoutToExcel(filePath);
+                this.Title = "Training Paln Builder";
+            }
+        }
+
+        private void exportWorkoutToExcel(string filePath)
         {
             List<List<ComboBox>> weightTrainCycleList = new List<List<ComboBox>>();
             List<List<ComboBox>> crossTrainCycleList1 = new List<List<ComboBox>>();
@@ -1218,7 +1290,7 @@ namespace WorkoutAppWPF
 
             runCycleList = runDefInputList;
 
-            exportPlanToExcel(2, runDefInputList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2);
+            exportExcelSheet(2, runDefInputList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
 
 
             weightTrainCycleList = new List<List<ComboBox>>();
@@ -1285,15 +1357,13 @@ namespace WorkoutAppWPF
                 crossTrainCycleList2.Add(crossTrainWeekList2);
             }
 
-            exportPlanToExcel(1, runCycleList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2);
+            exportExcelSheet(1, runCycleList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
         }
 
-        private void exportPlanToExcel(int sheetIdx, List<List<RunButton>> runButtonList, List<List<ComboBox>> weightTrainCycleList, List<List<ComboBox>> crossTrainCycleList1, List<List<ComboBox>> crossTrainCycleList2)
+        private void exportExcelSheet(int sheetIdx, List<List<RunButton>> runButtonList, List<List<ComboBox>> weightTrainCycleList, List<List<ComboBox>> crossTrainCycleList1, List<List<ComboBox>> crossTrainCycleList2, string filePath)
         {
             ExcelExportUtility excelExportUtility = new ExcelExportUtility();
 
-            //ToDo: Add file load utility
-            string filePath = "C:\\Misc\\Workout_Test.xls";
             excelExportUtility.createWorkbook();
 
             //get number of cycles and number of days
@@ -1516,10 +1586,18 @@ namespace WorkoutAppWPF
 
             }
             //save the workbook
-            excelExportUtility.saveWorkbook(filePath);
+            try
+            {
+                excelExportUtility.saveWorkbook(filePath);
+            }
+            catch
+            {
+                Thread thread = new Thread(() => MessageBox.Show("Something went wrong saving to excel...", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+                thread.Start();
+            }
         }
 
-        private void saveSettings()
+        private void saveSettings(string filePath)
         {
 
             int numCycles = (int)Math.Ceiling(double.Parse(numCyclesInput.Text));
@@ -1616,14 +1694,14 @@ namespace WorkoutAppWPF
 
             }
 
-            appSettings.Save();
+            appSettings.Save(filePath);
 
         }
 
-        private void loadSettings()
+        private void loadSettings(string filePath)
         {
 
-            ApplicationSettings.Load();
+            ApplicationSettings.Load(filePath);
             ApplicationSettings appSettings = ApplicationSettings.Instance;
 
             int numCycles = (int)double.Parse(appSettings.numberOfCycles);

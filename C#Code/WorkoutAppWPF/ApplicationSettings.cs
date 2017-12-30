@@ -55,13 +55,6 @@ namespace WorkoutAppWPF
         }
 
         // ---------------------------------------------------------------------------------------
-
-        // Name of configuration file.
-        [XmlIgnore]
-        public const string FileName = "C:\\Misc\\AppSettings\\config.xml";
-
-        // Globally accessable instance of loaded configuration.
-        [XmlIgnore]
         public static ApplicationSettings Instance { get; private set; }
 
         // Empty constructor for XmlSerializer.
@@ -77,21 +70,21 @@ namespace WorkoutAppWPF
         }
 
         // Loads the configuration from file.
-        public static void Load()
+        public static void Load(string fileName)
         {
             var serializer = new XmlSerializer(typeof(ApplicationSettings));
 
-            using (var fStream = new FileStream(ApplicationSettings.FileName, FileMode.Open))
+            using (var fStream = new FileStream(fileName, FileMode.Open))
                 ApplicationSettings.Instance = (ApplicationSettings)serializer.Deserialize(fStream);
 
         }
 
         // Saves the configuration to file.
-        public void Save()
+        public void Save(string fileName)
         {
             var serializer = new XmlSerializer(typeof(ApplicationSettings));
 
-            using (var fStream = new FileStream(ApplicationSettings.FileName, FileMode.Create))
+            using (var fStream = new FileStream(fileName, FileMode.Create))
                 serializer.Serialize(fStream, this);
         }
     }
