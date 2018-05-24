@@ -229,6 +229,7 @@ namespace WorkoutAppWPF
             double lastMileageTgt = double.Parse(minMileageInput.Text);
             int numCyclesRest = (int)Math.Ceiling(double.Parse(numCyclesReset.Text));
             int periodCnt = numCyclesRest;
+            int cnt = 1;
 
             for (int ii = 0; ii < numberOfCycles; ii++)
             {
@@ -242,8 +243,14 @@ namespace WorkoutAppWPF
                 {
                     if (mileageExceeded == false)
                     {
-                        doubleCycleMileage = lastMileageTgt + mileageDelta;
-
+                        if (cnt == 0)
+                        {
+                            doubleCycleMileage = lastMileageTgt + mileageDelta;
+                            cnt = 1;
+                        }else
+                        {
+                            cnt = 0;
+                        }
                         if (doubleCycleMileage >= maxMileage)
                         {
                             doubleCycleMileage = maxMileage;
@@ -414,7 +421,7 @@ namespace WorkoutAppWPF
 
                 //Add Cross Train Inputs
                 ComboBox weightTrainInput = new ComboBox();
-                weightTrainInput.Items.Add("Abs");
+                weightTrainInput.Items.Add("W - Core");
                 weightTrainInput.Items.Add("W - Legs");
                 weightTrainInput.Items.Add("W - Chest");
                 weightTrainInput.Items.Add("W - Should");
@@ -740,7 +747,7 @@ namespace WorkoutAppWPF
                     weightTrainInputList[0].SelectedItem = "W - Chest";
                     weightTrainInputList[1].SelectedItem = "W - Back";
                     weightTrainInputList[2].SelectedItem = "W - Legs";
-                    weightTrainInputList[3].SelectedItem = "Abs";
+                    weightTrainInputList[3].SelectedItem = "W - Core";
                     weightTrainInputList[4].SelectedItem = "W - Should";
                     weightTrainInputList[5].SelectedItem = "Rest";
                     weightTrainInputList[6].SelectedItem = "Rest";
@@ -780,7 +787,7 @@ namespace WorkoutAppWPF
                     weightTrainInputList[1].SelectedItem = "W - Back";
                     weightTrainInputList[2].SelectedItem = "W - Legs";
                     weightTrainInputList[3].SelectedItem = "Rest";
-                    weightTrainInputList[4].SelectedItem = "Abs";
+                    weightTrainInputList[4].SelectedItem = "W - Core";
                     weightTrainInputList[5].SelectedItem = "W - Should";
                     weightTrainInputList[6].SelectedItem = "Rest";
                     weightTrainInputList[7].SelectedItem = "Rest";
@@ -819,7 +826,7 @@ namespace WorkoutAppWPF
                     crossTrainInputList2[8].SelectedItem = "Rest";
 
                     weightTrainInputList[0].SelectedItem = "Rest";
-                    weightTrainInputList[1].SelectedItem = "Abs";
+                    weightTrainInputList[1].SelectedItem = "W - Core";
                     weightTrainInputList[2].SelectedItem = "W - Chest";
                     weightTrainInputList[3].SelectedItem = "Rest";
                     weightTrainInputList[4].SelectedItem = "W - Back";
@@ -848,7 +855,7 @@ namespace WorkoutAppWPF
                 case "W - Should":
                     crossTrainBox.Background = Brushes.Yellow;
                     break;
-                case "Abs":
+                case "W - Core":
                     crossTrainBox.Background = Brushes.Yellow;
                     break;
                 case "W - Chest":
@@ -1265,9 +1272,9 @@ namespace WorkoutAppWPF
             {
                 // Save document
                 string filePath = saveFileDialog.FileName;
-                this.Title = "Training Paln Builder - Saving...";
+                this.Title = "Training Plan Builder - Saving...";
                 exportWorkoutToExcel(filePath);
-                this.Title = "Training Paln Builder";
+                this.Title = "Training Plan Builder";
             }
         }
 
@@ -1291,7 +1298,12 @@ namespace WorkoutAppWPF
 
             runCycleList = runDefInputList;
 
-            exportExcelSheet(2, runDefInputList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
+            //create workbook
+            ExcelExportUtility excelExportUtility = new ExcelExportUtility();
+            excelExportUtility.createWorkbook();
+
+            //write cycle data
+            exportExcelSheet(excelExportUtility,2, runDefInputList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
 
 
             weightTrainCycleList = new List<List<ComboBox>>();
@@ -1304,7 +1316,28 @@ namespace WorkoutAppWPF
             List<ComboBox> crossTrainWeekList2 = new List<ComboBox>();
             List<RunButton> runWeekList = new List<RunButton>();
 
-            int dayCount = 1;
+            ComboBox defaultCTBox = new ComboBox();
+            defaultCTBox.Items.Add("Rest");
+            defaultCTBox.SelectedItem = "Rest";
+
+            RunButton defaultRunButton = new RunButton();
+            defaultRunButton.setRunType(RunTypes.Rest);
+
+            //resort the date time so it starts on a monday
+            DateTime currDate = (DateTime)targetTrainingStartDate.SelectedDate;
+
+            int dayOfWeek = (int)currDate.DayOfWeek;
+
+            //should this be zero index
+            for (int ii = 0; ii < dayOfWeek-1; ii++)
+            {
+                runWeekList.Add(defaultRunButton);
+                weightTrainWeekList.Add(defaultCTBox);
+                crossTrainWeekList1.Add(defaultCTBox);
+                crossTrainWeekList2.Add(defaultCTBox);
+            }
+
+            int dayCount = dayOfWeek;
             for (int ii = 0; ii < numCycles; ii++)
             {
                 for (int jj = 0; jj < numDays; jj++)
@@ -1334,12 +1367,7 @@ namespace WorkoutAppWPF
 
             }
 
-            ComboBox defaultCTBox = new ComboBox();
-            defaultCTBox.Items.Add("Rest");
-            defaultCTBox.SelectedItem = "Rest";
 
-            RunButton defaultRunButton = new RunButton();
-            defaultRunButton.setRunType(RunTypes.Rest);
 
             if (dayCount != 1)
             {
@@ -1358,14 +1386,25 @@ namespace WorkoutAppWPF
                 crossTrainCycleList2.Add(crossTrainWeekList2);
             }
 
-            exportExcelSheet(1, runCycleList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
+            //write week data
+            exportExcelSheet(excelExportUtility,1, runCycleList, weightTrainCycleList, crossTrainCycleList1, crossTrainCycleList2, filePath);
+
+            //save the workbook
+            try
+            {
+                excelExportUtility.saveWorkbook(filePath);
+            }
+            catch
+            {
+                Thread thread = new Thread(() => MessageBox.Show("Something went wrong saving to excel...", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+                thread.Start();
+            }
+
         }
 
-        private void exportExcelSheet(int sheetIdx, List<List<RunButton>> runButtonList, List<List<ComboBox>> weightTrainCycleList, List<List<ComboBox>> crossTrainCycleList1, List<List<ComboBox>> crossTrainCycleList2, string filePath)
+        private void exportExcelSheet(ExcelExportUtility excelExportUtility, int sheetIdx, List<List<RunButton>> runButtonList, List<List<ComboBox>> weightTrainCycleList, List<List<ComboBox>> crossTrainCycleList1, List<List<ComboBox>> crossTrainCycleList2, string filePath)
         {
-            ExcelExportUtility excelExportUtility = new ExcelExportUtility();
 
-            excelExportUtility.createWorkbook();
 
             //get number of cycles and number of days
             int numCycles = runButtonList.Count;
@@ -1386,6 +1425,13 @@ namespace WorkoutAppWPF
 
             //get training start date
             DateTime currDate = (DateTime)targetTrainingStartDate.SelectedDate;
+
+            if (numDays == 7)
+            {
+                int dayOfWeek = (int)currDate.DayOfWeek;
+                int deltaDays = 1 - dayOfWeek;
+                currDate = currDate.AddDays(deltaDays);
+            }
 
             //loop through each cycle to extrat information
             for (int ii = 0; ii < numCycles; ii++)
@@ -1586,16 +1632,16 @@ namespace WorkoutAppWPF
 
 
             }
-            //save the workbook
-            try
-            {
-                excelExportUtility.saveWorkbook(filePath);
-            }
-            catch
-            {
-                Thread thread = new Thread(() => MessageBox.Show("Something went wrong saving to excel...", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
-                thread.Start();
-            }
+            ////save the workbook
+            //try
+            //{
+            //    excelExportUtility.saveWorkbook(filePath);
+            //}
+            //catch
+            //{
+            //    Thread thread = new Thread(() => MessageBox.Show("Something went wrong saving to excel...", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+            //    thread.Start();
+            //}
         }
 
         private void saveSettings(string filePath)
