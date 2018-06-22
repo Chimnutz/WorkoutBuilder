@@ -250,6 +250,7 @@
                                 <ComboBoxItem Content="Long"/>
                                 <ComboBoxItem Content="Tempo"/>
                                 <ComboBoxItem Content="Interval"/>
+                                <ComboBoxItem Content="Strides"/>
                                 <ComboBoxItem Content="Rest"/>
                             </ComboBox>
                             <Grid>

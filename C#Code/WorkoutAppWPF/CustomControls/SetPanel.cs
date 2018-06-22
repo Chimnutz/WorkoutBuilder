@@ -130,6 +130,7 @@ namespace WorkoutAppWPF.CustomControls
             paceComboInput.Items.Add("Interval");
             paceComboInput.Items.Add("Repition");
             paceComboInput.Items.Add("Hills");
+            paceComboInput.Items.Add("Progression");
             paceComboInput.SelectedValue = "Easy";
             paceComboInput.Width = 130;
             paceComboInput.HorizontalAlignment = HorizontalAlignment.Left;

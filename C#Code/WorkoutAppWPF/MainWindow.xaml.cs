@@ -29,7 +29,7 @@ namespace WorkoutAppWPF
     public partial class MainWindowApp : Window
     {
         Grid mileageGrid;
-        Grid dayNumerGrid;
+        Grid dayNumberGrid;
         Grid runTypeGrid;
         Grid weightTrainGrid;
         Grid crossTrainGrid1;
@@ -107,12 +107,20 @@ namespace WorkoutAppWPF
 
         private void recalcRunTable_click(object sender, EventArgs e)
         {
-            WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
-            WorkoutDefStackPanel.Children.Remove(runTypeGrid);
-            WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
-            WorkoutDefStackPanel.Children.Remove(crossTrainGrid1);
-            WorkoutDefStackPanel.Children.Remove(crossTrainGrid2);
-            createRunTypeSelectorTable();
+
+            int numDays = (int)Math.Ceiling(double.Parse(numDaysInput.Text));
+
+            //only remove all children if the number of days has changed
+            if ((dayNumberGrid.Children.Count-1) != numDays)
+            {
+
+                WorkoutDefStackPanel.Children.Remove(dayNumberGrid);
+                WorkoutDefStackPanel.Children.Remove(runTypeGrid);
+                WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
+                WorkoutDefStackPanel.Children.Remove(crossTrainGrid1);
+                WorkoutDefStackPanel.Children.Remove(crossTrainGrid2);
+                createRunTypeSelectorTable();
+            }
 
             runDefStackPanel.Children.Remove(runDefGrid);
             createRunDefinitionTable();
@@ -335,7 +343,7 @@ namespace WorkoutAppWPF
             runInputList = new List<ComboBox>();
             weightTrainInputList = new List<ComboBox>();
 
-            dayNumerGrid = new Grid();
+            dayNumberGrid = new Grid();
             runTypeGrid = new Grid();
             weightTrainGrid = new Grid();
             crossTrainGrid1 = new Grid();
@@ -359,7 +367,7 @@ namespace WorkoutAppWPF
                 ColumnDefinition gridCol5 = new ColumnDefinition();
                 gridCol5.Width = new GridLength(1, GridUnitType.Star);
 
-                dayNumerGrid.ColumnDefinitions.Add(gridCol1);
+                dayNumberGrid.ColumnDefinitions.Add(gridCol1);
                 runTypeGrid.ColumnDefinitions.Add(gridCol2);
                 weightTrainGrid.ColumnDefinitions.Add(gridCol3);
                 crossTrainGrid1.ColumnDefinitions.Add(gridCol4);
@@ -373,7 +381,7 @@ namespace WorkoutAppWPF
             dayText.HorizontalAlignment = HorizontalAlignment.Center;
             Grid.SetRow(dayText, 0);
             Grid.SetColumn(dayText, 0);
-            dayNumerGrid.Children.Add(dayText);
+            dayNumberGrid.Children.Add(dayText);
 
             //Add run label
             Label runText = new Label();
@@ -417,7 +425,7 @@ namespace WorkoutAppWPF
                 dayNumberText.HorizontalAlignment = HorizontalAlignment.Center;
                 Grid.SetRow(dayNumberText, 0);
                 Grid.SetColumn(dayNumberText, ii + 1);
-                dayNumerGrid.Children.Add(dayNumberText);
+                dayNumberGrid.Children.Add(dayNumberText);
 
                 //Add Cross Train Inputs
                 ComboBox weightTrainInput = new ComboBox();
@@ -474,7 +482,7 @@ namespace WorkoutAppWPF
 
             }
 
-            WorkoutDefStackPanel.Children.Add(dayNumerGrid);
+            WorkoutDefStackPanel.Children.Add(dayNumberGrid);
             WorkoutDefStackPanel.Children.Add(runTypeGrid);
             WorkoutDefStackPanel.Children.Add(weightTrainGrid);
             WorkoutDefStackPanel.Children.Add(crossTrainGrid1);
@@ -699,6 +707,9 @@ namespace WorkoutAppWPF
                 case "Rest":
                     runButton.setRunType(RunTypes.Rest);
                     break;
+                case "Strides":
+                    runButton.setRunType(RunTypes.Strides);
+                    break;
                 default:
                     throw new Exception("Undefined run type");
             }
@@ -920,6 +931,12 @@ namespace WorkoutAppWPF
                 case "Repition":
                     runCmbBox.Background = Brushes.Orange;
                     break;
+                case "Progression":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Strides":
+                    runCmbBox.Background = Brushes.Pink;
+                    break;
                 default:
                     break;
             }
@@ -966,6 +983,12 @@ namespace WorkoutAppWPF
                     break;
                 case "Repition":
                     runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Progression":
+                    runCmbBox.Background = Brushes.Orange;
+                    break;
+                case "Strides":
+                    runCmbBox.Background = Brushes.Pink;
                     break;
                 default:
                     break;
@@ -1505,6 +1528,22 @@ namespace WorkoutAppWPF
                             runText = runText + thisRunButton.getCoolDistance().ToString() + thisRunButton.getCoolUnits().ToString() + " Cooldown";
                             cellColor = Brushes.Orange;
                             break;
+
+                        case RunTypes.Strides:
+                            //get warmup info
+                            //runText = thisRunButton.getWarmupDistance().ToString() + thisRunButton.getWarmupUnits().ToString() + " Warmup \n";
+
+                            //loop through each set
+                            for (int kk = 0; kk < numSets; kk++)
+                            {
+                                runText = runText + workoutReps[kk].ToString() + "X" + workoutDist[kk].ToString() + workoutUnits[kk].ToString() + " @ " + workoutPace[kk].ToString() + "\n";
+                            }
+
+                            //get cool down info
+                            //runText = runText + thisRunButton.getCoolDistance().ToString() + thisRunButton.getCoolUnits().ToString() + " Cooldown";
+                            cellColor = Brushes.Pink;
+                            break;
+
                         case RunTypes.Long:
                             runText = thisRunButton.getTotalMileage().ToString() + "Miles Easy";
                             totalMileage = thisRunButton.getTotalMileage();
@@ -1776,7 +1815,7 @@ namespace WorkoutAppWPF
             }
 
             //create run type selctions
-            WorkoutDefStackPanel.Children.Remove(dayNumerGrid);
+            WorkoutDefStackPanel.Children.Remove(dayNumberGrid);
             WorkoutDefStackPanel.Children.Remove(runTypeGrid);
             WorkoutDefStackPanel.Children.Remove(weightTrainGrid);
             WorkoutDefStackPanel.Children.Remove(crossTrainGrid1);

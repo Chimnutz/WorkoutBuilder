@@ -79,6 +79,9 @@ namespace WorkoutAppWPF.ActivityTypes
                 case RunTypes.Tempo:
                     this.Background = Brushes.Orange;
                     break;
+                case RunTypes.Strides:
+                    this.Background = Brushes.Pink;
+                    break;
                 default:
                     this.Background = Brushes.DarkGray;
                     break;
@@ -288,7 +291,7 @@ namespace WorkoutAppWPF.ActivityTypes
 
                 totalMileage = warmupDistance + repDistance + repCoolDistance + coolDistance;
             }
-            else if((runType == RunTypes.Tempo) || (runType == RunTypes.Interval) || (runType == RunTypes.Repition))
+            else if((runType == RunTypes.Tempo) || (runType == RunTypes.Interval) || (runType == RunTypes.Repition) || (runType == RunTypes.Strides))
             {
                 warmDistance = convertToMiles(this.warmupDistance, this.warmupDistanceUnits);
 
@@ -313,7 +316,7 @@ namespace WorkoutAppWPF.ActivityTypes
             double totalMileage = 0;
             double repDistance = 0;
 
-            if ((runType == RunTypes.Tempo) || (runType == RunTypes.Interval) || (runType == RunTypes.Repition))
+            if ((runType == RunTypes.Tempo) || (runType == RunTypes.Interval) || (runType == RunTypes.Repition) || (runType == RunTypes.Strides))
             {
                 repDistance = 0;
                 for (int ii = 0; ii < this.repDistance.Count; ii++)
